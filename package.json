@@ -1,10 +1,11 @@
 {
   "name": "@vladfiliucov/rss-aggregator",
   "version": "1.0.0",
+  "type": "module",
   "description": "app to listen for rss feed",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "make test"
+    "test": "npx -n --experimental-vm-modules jest"
   },
   "repository": {
     "type": "git",
