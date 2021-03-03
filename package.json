@@ -1,5 +1,5 @@
 {
-  "name": "@vladfiliucov/rss-aggregator",
+  "name": "@hexlet/code",
   "version": "1.0.0",
   "type": "module",
   "description": "app to listen for rss feed",
