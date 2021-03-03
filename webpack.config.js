@@ -1,7 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
-// const path = require('path');
-// const webpack = require('webpack');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 /*
  * We've enabled MiniCssExtractPlugin for you. This allows your app to
@@ -11,25 +10,35 @@ import webpack from 'webpack';
  * https://github.com/webpack-contrib/mini-css-extract-plugin
  *
  */
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-const __dirname = './';
+const __dirname = process.cwd();
 
-// module.exports = {
 export default {
   mode: 'development',
 
   plugins: [
     new webpack.ProgressPlugin(),
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+    }),
     new MiniCssExtractPlugin({ filename: 'main.[contenthash].css' }),
   ],
 
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+
   module: {
     rules: [{
-      test: /\.(js|jsx)$/,
+      test: /\.js$/,
+      exclude: /node_modules/,
       include: [path.resolve(__dirname, 'src')],
-      loader: 'babel-loader',
+      use: {
+        loader: 'babel-loader',
+      },
     }, {
       test: /.css$/,
 
