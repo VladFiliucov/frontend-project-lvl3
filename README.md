@@ -3,5 +3,4 @@
 
 ### Status
 [![Maintainability](https://api.codeclimate.com/v1/badges/9a6cf204f6f617878381/maintainability)](https://codeclimate.com/github/VladFiliucov/frontend-project-lvl3/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/9a6cf204f6f617878381/test_coverage)](https://codeclimate.com/github/VladFiliucov/frontend-project-lvl3/test_coverage)
 [go to app](https://pedantic-johnson-e38f4b.netlify.app/)
