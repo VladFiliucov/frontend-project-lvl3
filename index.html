@@ -2,10 +2,38 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>RSS</title>
+    <title>RSS aggregator</title>
   </head>
-  <body>
-    <h1>RSS</h1>
-    <script src="/bundle.js"></script>
+  <body class="d-flex flex-column min-vh-100">
+    <main class="flex-grow-1">
+      <section class="container-fluid bg-dark p-5">
+        <div class="row">
+          <div class="col-md-10 col-lg-8 mx-auto text-white">
+            <h1 class="display-3">RSS aggregator</h1>
+            <p class="lead">Start reading RSS today</p>
+            <form action="" class="rss-form">
+              <div class="form-row">
+                <div class="col">
+                  <input autofocus="" required="" name="url" aria-label="url" class="form-control form-control-lg w-100" placeholder="RSS link">
+                  <button type="submit" aria-label="add" class="btn btn-lg btn-primary px-sm-5">
+                    Add
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div class="feedback"></div>
+          </div>
+        </div>
+      </section>
+      <section class="container-fluid p-5">
+        <div class="row">
+          <div class="col-md-10 col-lg-8 mx-auto feeds"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-lg-8 mx-auto posts">
+          </div>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

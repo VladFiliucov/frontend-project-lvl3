@@ -39,18 +39,17 @@ export default {
       use: {
         loader: 'babel-loader',
       },
-    }, {
-      test: /.css$/,
-
+    },
+    {
+      test: /\.(css)$/,
       use: [{
-        loader: MiniCssExtractPlugin.loader,
+        // inject CSS to page
+        loader: 'style-loader',
       }, {
+        // translates CSS into CommonJS modules
         loader: 'css-loader',
-
-        options: {
-          sourceMap: true,
-        },
       }],
-    }],
+    },
+    ],
   },
 };
