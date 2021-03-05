@@ -2,4 +2,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 console.log('this file is loaded');
 
-export default (a, b) => a + b;
+const app = () => {
+  const form = document.querySelector('#rss-form');
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    console.log('Submitting form called');
+  });
+};
+
+app();
