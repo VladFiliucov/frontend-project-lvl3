@@ -27,13 +27,15 @@ const app = () => {
   };
 
   const schema = yup.object().shape({
-    feedUrl: yup.string().required().url().notOneOf(state.feeds.map(feed => feed.url)),
+    feedUrl: yup.string().required().url().notOneOf(state.feeds.map(feed => feed.url), 'RSS уже существует'),
   });
 
-  const validateForm = async (formData) => {
-    const result = await schema.isValid(formData);
-    console.log("asdfadfadfa", result);
-  }
+  const validateForm = (formData) => {
+    schema.validate(formData).catch((err) => {
+      console.log(err.name); // => 'ValidationError'
+      console.log(err.errors);
+    });
+  };
 
   const form = document.querySelector('#rss-form');
 
