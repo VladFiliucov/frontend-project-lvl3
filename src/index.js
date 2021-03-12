@@ -1,4 +1,5 @@
 import parseResponse from './parseResponse.js';
+import watchState from './view/index.js';
 import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428
 import * as yup from 'yup';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,6 +26,8 @@ const app = () => {
       ]
     }],
   };
+
+  const watchedState = watchState(state);
 
   const schema = yup.object().shape({
     feedUrl: yup.string().required().url().notOneOf(state.feeds.map(feed => feed.url), 'RSS уже существует'),
