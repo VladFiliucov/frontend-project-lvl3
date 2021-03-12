@@ -3,15 +3,6 @@ import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issue
 import * as yup from 'yup';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const schema = yup.object().shape({
-  feedUrl: yup.string().required().url().notOneOf(['jimmy', 42]),
-});
-
-const validateForm = async () => {
-  const result = await schema.isValid(42);
-  console.log("asdfadfadfa", result);
-}
-
 const app = () => {
   const state = {
     form: {
@@ -21,15 +12,36 @@ const app = () => {
       valid: false,
       errors: {},
     },
-    feeds: [],
+    feeds: [{
+      url: 'https://ru.hexlet.io/lessons.rss',
+      title: 'foo',
+      description: 'bar',
+      items: [
+        {
+          title: 'Рациональные числа',
+          link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/rational/theory_unit',
+          description: 'Цель: Рассмотреть рациональные числа как новый пример абстракции на основе пар чисел.'
+        }
+      ]
+    }],
   };
+
+  const schema = yup.object().shape({
+    feedUrl: yup.string().required().url().notOneOf(state.feeds.map(feed => feed.url)),
+  });
+
+  const validateForm = async (formData) => {
+    const result = await schema.isValid(formData);
+    console.log("asdfadfadfa", result);
+  }
 
   const form = document.querySelector('#rss-form');
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     // validation on submit
-    validateForm();
+    const formData = new FormData(event.target);
+    validateForm({ feedUrl: formData.get('url') });
     fetch('https://ru.hexlet.io/lessons.rss')
       .then((response) => response.text())
       .then((str) => (new window.DOMParser()).parseFromString(str, 'text/xml'))
