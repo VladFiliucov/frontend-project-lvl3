@@ -5,9 +5,9 @@ import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issue
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const fetchFeed = (url) => (
-  fetch(url)
-    .then((response) => response.text())
-    .then((str) => (new window.DOMParser()).parseFromString(str, 'text/xml'))
+  fetch(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
+    .then((response) => response.json())
+    .then((str) => (new window.DOMParser()).parseFromString(str.contents, 'text/xml'))
 );
 
 const app = () => {
