@@ -19,7 +19,29 @@ const renderLists = () => {
 
 const renderNewestPosts = (posts) => {
   const postsContainer = document.querySelector('.posts');
-}
+  const ul = postsContainer.querySelector('ul');
+  posts.forEach((post) => {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
+
+    const a = document.createElement('a');
+    a.setAttribute('href', post.link);
+    a.setAttribute('rel', 'noopener noreferrer');
+    a.setAttribute('target', '_blank');
+    a.classList.add('font-weight-bold');
+    a.textContent = post.postTitle;
+
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.classList.add('btn', 'btn-primary', 'btn-sm');
+    button.textContent = 'Просмотр';
+
+    li.append(a);
+    li.append(button);
+
+    ul.appendChild(li);
+  });
+};
 
 const renderNewestFeed = (feeds) => {
   const feedContainer = document.querySelector('.feeds');
@@ -36,6 +58,8 @@ const renderNewestFeed = (feeds) => {
   li.append(h3);
   li.append(p);
   currentList.appendChild(li);
+
+  renderNewestPosts(newestFeed.posts.reverse());
 };
 
 const fieldElements = 1;
