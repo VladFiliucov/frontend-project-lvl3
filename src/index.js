@@ -51,6 +51,7 @@ const app = () => {
       .then((response) => response.text())
       .then((str) => (new window.DOMParser()).parseFromString(str, 'text/xml'))
       .then((xmlDoc) => console.log(parseResponse(xmlDoc)));
+    watchedState.feeds.push({url: 'Hithere'})
   });
 };
 
