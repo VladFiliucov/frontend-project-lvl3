@@ -1,7 +1,6 @@
 import onChange from 'on-change';
 
 const renderErrors = (errors) => {
-  console.log('rendering errors', errors);
   const errorMessage = errors[0];
   const input = document.querySelector('input');
   const errorMessageDiv = document.querySelector('.feedback');

@@ -29,7 +29,7 @@ const app = () => {
       feedUrl: yup
         .string()
         .required()
-        .url()
+        .url('Ссылка должна быть валидным URL')
         .notOneOf(watchedState.feeds.map((feed) => feed.url), 'RSS уже существует'),
     });
     return schema.validate(formData);
@@ -39,7 +39,6 @@ const app = () => {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    // validation on submit
     const formData = new FormData(event.target);
     const url = formData.get('url');
     validateForm({ feedUrl: url })
