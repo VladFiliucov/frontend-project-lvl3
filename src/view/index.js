@@ -2,18 +2,24 @@ import onChange from 'on-change';
 
 const renderErrors = () => console.log('rendering errors');
 
-const renderPosts = () => console.log('rendering posts');
+const renderLists = () => {
+  const feedContainer = document.querySelector('.feeds');
+  const heading = document.createElement('h2');
+  heading.textContent = 'Фиды';
+  feedContainer.appendChild(heading);
+  const ul = document.createElement('ul');
+  ul.classList.add('list-group', 'mb-5');
+  feedContainer.appendChild(ul);
+};
+
+const renderNewestPosts = (posts) => {
+  const postsContainer = document.querySelector('.posts');
+}
 
 const renderNewestFeed = (feeds) => {
   const feedContainer = document.querySelector('.feeds');
-  if (feeds.length === 1) {
-    const heading = document.createElement('h2');
-    heading.textContent = 'Фиды';
-    feedContainer.appendChild(heading);
-    const ul = document.createElement('ul');
-    ul.classList.add('list-group', 'mb-5');
-    feedContainer.appendChild(ul);
-  }
+  if (feeds.length === 1) renderLists();
+
   const newestFeed = feeds[feeds.length - 1];
   const li = document.createElement('li');
   li.classList.add('list-group-item');
