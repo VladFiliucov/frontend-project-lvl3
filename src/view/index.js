@@ -1,6 +1,21 @@
 import onChange from 'on-change';
 
-const renderErrors = () => console.log('rendering errors');
+const renderErrors = (errors) => {
+  console.log('rendering errors', errors);
+  const errorMessage = errors[0];
+  const input = document.querySelector('input');
+  const errorMessageDiv = document.querySelector('.feedback');
+
+  if (errors.length === 0) {
+    input.classList.remove('is-invalid');
+    errorMessageDiv.innerHTML = '';
+    return;
+  }
+
+  input.classList.add('is-invalid');
+  errorMessageDiv.classList.add('text-success', 'text-danger');
+  errorMessageDiv.textContent = errorMessage;
+};
 
 const resetForm = () => {
   const form = document.querySelector('#rss-form');
@@ -67,12 +82,10 @@ const renderNewestFeed = (feeds) => {
   renderNewestPosts(newestFeed.posts.reverse());
 };
 
-const fieldElements = 1;
-
 export default (state) => onChange(state, (path, value) => {
   switch (path) {
     case 'form.errors':
-      renderErrors(fieldElements, value);
+      renderErrors(value);
       break;
     case 'feeds':
       renderNewestFeed(value);

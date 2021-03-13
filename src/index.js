@@ -17,18 +17,23 @@ const app = () => {
       processError: null,
       url: '',
       valid: false,
-      errors: {},
+      errors: [],
     },
     feeds: [],
   };
 
   const watchedState = watchState(state);
 
-  const schema = yup.object().shape({
-    feedUrl: yup.string().required().url().notOneOf(state.feeds.map((feed) => feed.url), 'RSS уже существует'),
-  });
-
-  const validateForm = (formData) => schema.validate(formData);
+  const validateForm = (formData) => {
+    const schema = yup.object().shape({
+      feedUrl: yup
+        .string()
+        .required()
+        .url()
+        .notOneOf(watchedState.feeds.map((feed) => feed.url), 'RSS уже существует'),
+    });
+    return schema.validate(formData);
+  };
 
   const form = document.querySelector('#rss-form');
 
@@ -39,6 +44,7 @@ const app = () => {
     const url = formData.get('url');
     validateForm({ feedUrl: url })
       .then(() => {
+        watchedState.form.errors = [];
         fetchFeed(url)
           .then((xmlDoc) => {
             const parsedFeed = parseResponse(xmlDoc);
@@ -46,8 +52,9 @@ const app = () => {
           });
       })
       .catch((err) => {
-        console.log(err.name); // => 'ValidationError'
-        console.log(err.errors);
+        // console.log(err.name); // => 'ValidationError'
+        // console.log(err.errors);
+        watchedState.form.errors = err.errors;
       });
   });
 };
