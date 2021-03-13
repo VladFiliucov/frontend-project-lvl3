@@ -33,12 +33,7 @@ const app = () => {
     feedUrl: yup.string().required().url().notOneOf(state.feeds.map(feed => feed.url), 'RSS уже существует'),
   });
 
-  const validateForm = (formData) => {
-    schema.validate(formData).catch((err) => {
-      console.log(err.name); // => 'ValidationError'
-      console.log(err.errors);
-    });
-  };
+  const validateForm = (formData) => schema.validate(formData);
 
   const form = document.querySelector('#rss-form');
 
@@ -46,12 +41,19 @@ const app = () => {
     event.preventDefault();
     // validation on submit
     const formData = new FormData(event.target);
-    validateForm({ feedUrl: formData.get('url') });
-    fetch('https://ru.hexlet.io/lessons.rss')
-      .then((response) => response.text())
-      .then((str) => (new window.DOMParser()).parseFromString(str, 'text/xml'))
-      .then((xmlDoc) => console.log(parseResponse(xmlDoc)));
-    watchedState.feeds.push({url: 'Hithere'})
+    validateForm({ feedUrl: formData.get('url') })
+      .then(() => {
+        fetch('https://ru.hexlet.io/lessons.rss')
+          .then((response) => response.text())
+          .then((str) => (new window.DOMParser()).parseFromString(str, 'text/xml'))
+          .then((xmlDoc) => console.log(parseResponse(xmlDoc)));
+        watchedState.feeds.push({url: 'Hithere'})
+        console.log("shouldnt bee here if validation failed");
+      })
+      .catch((err) => {
+        console.log(err.name); // => 'ValidationError'
+        console.log(err.errors);
+      })
   });
 };
 

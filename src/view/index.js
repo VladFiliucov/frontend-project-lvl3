@@ -4,7 +4,7 @@ const renderErrors = () => console.log('rendering errors');
 
 const renderPosts = () => console.log('rendering posts');
 
-const renderFeeds = (feeds) => {
+const renderNewestFeed = (feeds) => {
   const newestFeed = feeds[feeds.length - 1];
   const div = document.createElement('div');
   div.id = newestFeed.url;
@@ -21,7 +21,7 @@ export default (state) => onChange(state, (path, value) => {
       renderErrors(fieldElements, value);
       break;
     case 'feeds':
-      renderFeeds(value);
+      renderNewestFeed(value);
       break;
     default:
       break;
