@@ -2,6 +2,11 @@ import onChange from 'on-change';
 
 const renderErrors = () => console.log('rendering errors');
 
+const resetForm = () => {
+  const form = document.querySelector('#rss-form');
+  form.reset();
+};
+
 const renderLists = () => {
   const containers = [
     ['Фиды', document.querySelector('.feeds')],
@@ -71,6 +76,7 @@ export default (state) => onChange(state, (path, value) => {
       break;
     case 'feeds':
       renderNewestFeed(value);
+      resetForm();
       break;
     default:
       break;
