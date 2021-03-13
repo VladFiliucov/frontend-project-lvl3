@@ -25,7 +25,7 @@ const renderNewestPosts = (posts) => {
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
 
     const a = document.createElement('a');
-    a.setAttribute('href', post.link);
+    a.setAttribute('href', post.postLink);
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
     a.classList.add('font-weight-bold');
