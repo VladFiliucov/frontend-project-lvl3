@@ -48,6 +48,9 @@ const app = () => {
           .then((xmlDoc) => {
             const parsedFeed = parseResponse(xmlDoc);
             watchedState.feeds.push({ url, ...parsedFeed });
+          })
+          .catch(() => {
+            watchedState.form.errors = ['Network error. Please try again'];
           });
       })
       .catch((err) => {
