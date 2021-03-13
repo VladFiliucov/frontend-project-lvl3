@@ -5,13 +5,26 @@ const renderErrors = () => console.log('rendering errors');
 const renderPosts = () => console.log('rendering posts');
 
 const renderNewestFeed = (feeds) => {
-  const newestFeed = feeds[feeds.length - 1];
-  console.log(newestFeed);
-  const div = document.createElement('div');
-  div.id = newestFeed.url;
-  div.textContent = newestFeed.url;
   const feedContainer = document.querySelector('.feeds');
-  feedContainer.appendChild(div);
+  if (feeds.length === 1) {
+    const heading = document.createElement('h2');
+    heading.textContent = 'Фиды';
+    feedContainer.appendChild(heading);
+    const ul = document.createElement('ul');
+    ul.classList.add('list-group', 'mb-5');
+    feedContainer.appendChild(ul);
+  }
+  const newestFeed = feeds[feeds.length - 1];
+  const li = document.createElement('li');
+  li.classList.add('list-group-item');
+  const currentList = feedContainer.querySelector('ul');
+  const h3 = document.createElement('h3');
+  h3.textContent = newestFeed.title;
+  const p = document.createElement('p');
+  p.textContent = newestFeed.description;
+  li.append(h3);
+  li.append(p);
+  currentList.appendChild(li);
 };
 
 const fieldElements = 1;
