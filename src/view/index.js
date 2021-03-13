@@ -6,6 +6,7 @@ const renderPosts = () => console.log('rendering posts');
 
 const renderNewestFeed = (feeds) => {
   const newestFeed = feeds[feeds.length - 1];
+  console.log(newestFeed);
   const div = document.createElement('div');
   div.id = newestFeed.url;
   div.textContent = newestFeed.url;

@@ -19,18 +19,7 @@ const app = () => {
       valid: false,
       errors: {},
     },
-    feeds: [{
-      url: 'https://ru.hexlet.io/lessons.rsss',
-      title: 'foo',
-      description: 'bar',
-      items: [
-        {
-          title: 'Рациональные числа',
-          link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/rational/theory_unit',
-          description: 'Цель: Рассмотреть рациональные числа как новый пример абстракции на основе пар чисел.',
-        },
-      ],
-    }],
+    feeds: [],
   };
 
   const watchedState = watchState(state);
