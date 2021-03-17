@@ -21,10 +21,10 @@ const resetForm = () => {
   form.reset();
 };
 
-const renderLists = () => {
+const renderLists = (t) => {
   const containers = [
-    ['Фиды', document.querySelector('.feeds')],
-    ['Посты', document.querySelector('.posts')],
+    [t('feeds'), document.querySelector('.feeds')],
+    [t('posts'), document.querySelector('.posts')],
   ];
   containers.forEach(([name, container]) => {
     const heading = document.createElement('h2');
@@ -36,7 +36,7 @@ const renderLists = () => {
   });
 };
 
-const renderNewestPosts = (posts) => {
+const renderNewestPosts = (posts, t) => {
   const postsContainer = document.querySelector('.posts');
   const ul = postsContainer.querySelector('ul');
   posts.forEach((post) => {
@@ -53,7 +53,7 @@ const renderNewestPosts = (posts) => {
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.classList.add('btn', 'btn-primary', 'btn-sm');
-    button.textContent = 'Просмотр';
+    button.textContent = t('preview');
 
     li.append(a);
     li.append(button);
@@ -62,9 +62,9 @@ const renderNewestPosts = (posts) => {
   });
 };
 
-const renderNewestFeed = (feeds) => {
+const renderNewestFeed = (feeds, t) => {
   const feedContainer = document.querySelector('.feeds');
-  if (feeds.length === 1) renderLists();
+  if (feeds.length === 1) renderLists(t);
 
   const newestFeed = feeds[feeds.length - 1];
   const li = document.createElement('li');
@@ -78,16 +78,16 @@ const renderNewestFeed = (feeds) => {
   li.append(p);
   currentList.appendChild(li);
 
-  renderNewestPosts(newestFeed.posts.reverse());
+  renderNewestPosts(newestFeed.posts.reverse(), t);
 };
 
-export default (state) => onChange(state, (path, value) => {
+export default (state, t) => onChange(state, (path, value) => {
   switch (path) {
     case 'form.errors':
       renderErrors(value);
       break;
     case 'feeds':
-      renderNewestFeed(value);
+      renderNewestFeed(value, t);
       resetForm();
       break;
     default:

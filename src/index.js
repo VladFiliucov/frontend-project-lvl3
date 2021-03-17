@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import parseResponse from './parseResponse.js';
+import localePromise from './initializers/i18n.js';
 import watchState from './view/index.js';
 import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,7 +11,7 @@ const fetchFeed = (url) => (
     .then((str) => (new window.DOMParser()).parseFromString(str.contents, 'text/xml'))
 );
 
-const app = () => {
+const app = (t) => {
   const state = {
     form: {
       status: 'untouched',
@@ -22,7 +23,7 @@ const app = () => {
     feeds: [],
   };
 
-  const watchedState = watchState(state);
+  const watchedState = watchState(state, t);
 
   const validateForm = (formData) => {
     const schema = yup.object().shape({
@@ -50,7 +51,7 @@ const app = () => {
             watchedState.feeds.push({ url, ...parsedFeed });
           })
           .catch(() => {
-            watchedState.form.errors = ['Network error. Please try again'];
+            watchedState.form.errors = [t('networkError')];
           });
       })
       .catch((err) => {
@@ -61,4 +62,6 @@ const app = () => {
   });
 };
 
-app();
+localePromise.then((text) => {
+  app(text);
+});
