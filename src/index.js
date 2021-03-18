@@ -1,6 +1,5 @@
 import * as yup from 'yup';
-import parseResponse from './parseResponse.js';
-import { fetchFeed, observeFeedsUpdates } from './utils/index.js';
+import { fetchFeed, observeFeedsUpdates, parseResponse } from './utils/index.js';
 import localePromise from './initializers/i18n.js';
 import watchState from './view/index.js';
 import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428

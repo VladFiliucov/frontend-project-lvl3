@@ -78,7 +78,7 @@ const renderNewestFeed = (feeds, t) => {
   li.append(p);
   currentList.appendChild(li);
 
-  renderNewestPosts(newestFeed.posts.reverse(), t);
+  renderNewestPosts(newestFeed.posts, t);
 };
 
 export default (state, t) => onChange(state, (path, value) => {
