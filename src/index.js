@@ -24,19 +24,13 @@ const app = (t) => {
   };
 
   yup.setLocale({
-    // use constant translation keys for messages without values
     string: {
       // Почему не сработало просто с ключем?
       url: t('urlInvalid'),
     },
-    // mixed: {
-    //   default: 'field_invalid',
-    // },
-    // // use functions to generate an error object that includes the value from the schema
-    // number: {
-    //   min: ({ min }) => ({ key: 'field_too_short', values: { min } }),
-    //   max: ({ max }) => ({ key: 'field_too_big', values: { max } }),
-    // },
+    mixed: {
+      notOneOf: t('existingRSS'),
+    },
   });
 
   const watchedState = watchState(state, t);
@@ -47,8 +41,9 @@ const app = (t) => {
         .string()
         .required()
         .url()
-        .notOneOf(watchedState.feeds.map((feed) => feed.url), 'RSS уже существует'),
+        .notOneOf(watchedState.feeds.map((feed) => feed.url)),
     });
+
     return schema.validate(formData);
   };
 
@@ -71,8 +66,6 @@ const app = (t) => {
           });
       })
       .catch((err) => {
-        // console.log(err.name); // => 'ValidationError'
-        // console.log(err.errors);
         watchedState.form.errors = err.errors;
       });
   });
