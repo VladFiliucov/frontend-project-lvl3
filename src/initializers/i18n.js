@@ -7,6 +7,7 @@ export default i18next.init({
     'en-US': {
       translation: {
         networkError: 'Network error. Please try again',
+        urlInvalid: 'Field should be a valid URL',
         preview: 'Preview',
         posts: 'Posts',
         feeds: 'Feeds',
@@ -15,6 +16,7 @@ export default i18next.init({
     'ru-RU': {
       translation: {
         networkError: 'Произошла ошибка сети. Попробуйте еще раз',
+        urlInvalid: 'Ссылка должна быть валидным URL',
         preview: 'Просмотр',
         posts: 'Публикации',
         feeds: 'Фиды',

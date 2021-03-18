@@ -23,6 +23,22 @@ const app = (t) => {
     feeds: [],
   };
 
+  yup.setLocale({
+    // use constant translation keys for messages without values
+    string: {
+      // Почему не сработало просто с ключем?
+      url: t('urlInvalid'),
+    },
+    // mixed: {
+    //   default: 'field_invalid',
+    // },
+    // // use functions to generate an error object that includes the value from the schema
+    // number: {
+    //   min: ({ min }) => ({ key: 'field_too_short', values: { min } }),
+    //   max: ({ max }) => ({ key: 'field_too_big', values: { max } }),
+    // },
+  });
+
   const watchedState = watchState(state, t);
 
   const validateForm = (formData) => {
@@ -30,7 +46,7 @@ const app = (t) => {
       feedUrl: yup
         .string()
         .required()
-        .url('Ссылка должна быть валидным URL')
+        .url()
         .notOneOf(watchedState.feeds.map((feed) => feed.url), 'RSS уже существует'),
     });
     return schema.validate(formData);
