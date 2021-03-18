@@ -1,15 +1,10 @@
 import * as yup from 'yup';
 import parseResponse from './parseResponse.js';
+import { fetchFeed, observeFeedsUpdates } from './utils/index.js';
 import localePromise from './initializers/i18n.js';
 import watchState from './view/index.js';
 import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-const fetchFeed = (url) => (
-  fetch(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
-    .then((response) => response.json())
-    .then((str) => (new window.DOMParser()).parseFromString(str.contents, 'text/xml'))
-);
 
 const app = (t) => {
   const state = {
@@ -34,6 +29,8 @@ const app = (t) => {
   });
 
   const watchedState = watchState(state, t);
+
+  observeFeedsUpdates(watchedState.feeds);
 
   const validateForm = (formData) => {
     const schema = yup.object().shape({
