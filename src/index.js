@@ -29,7 +29,7 @@ const app = (t) => {
 
   const watchedState = watchState(state, t);
 
-  observeFeedsUpdates(watchedState.feeds);
+  // observeFeedsUpdates(watchedState.feeds);
 
   const validateForm = (formData) => {
     const schema = yup.object().shape({
@@ -56,6 +56,8 @@ const app = (t) => {
           .then((xmlDoc) => {
             const parsedFeed = parseResponse(xmlDoc);
             watchedState.feeds.push({ url, ...parsedFeed });
+
+            observeFeedsUpdates(watchedState.feeds);
           })
           .catch(() => {
             watchedState.form.errors = [t('networkError')];
