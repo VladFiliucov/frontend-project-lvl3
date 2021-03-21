@@ -1,16 +1,29 @@
+export const sortPostsByDate = (posts) => posts
+  .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
 export const parseResponse = (data) => {
   const title = data.getElementsByTagName('title')[0].childNodes[0].nodeValue;
   const description = data.getElementsByTagName('description')[0].childNodes[0].nodeValue;
-  const posts = [...data.querySelectorAll('item')].map((item) => ({
-    postLink: item.querySelector('link').innerHTML,
-    postTitle: item.querySelector('title').innerHTML,
-    postDescription: item.querySelector('description').innerHTML,
-  }));
+  const posts = [...data.querySelectorAll('item')].map((item) => {
+    const postLink = item.querySelector('link').innerHTML;
+    const postTitle = item.querySelector('title').innerHTML;
+    const postDescription = item.querySelector('description').innerHTML;
+    const pubDate = item.querySelector('pubDate').innerHTML;
+
+    return ({
+      postLink,
+      postTitle,
+      postDescription,
+      pubDate: new Date(pubDate),
+    });
+  });
 
   return {
-    title,
-    description,
-    posts,
+    feed: {
+      title,
+      description,
+    },
+    posts: sortPostsByDate(posts),
   };
 };
 
@@ -18,41 +31,29 @@ export const fetchFeed = (url) => (
   fetch(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
     .then((response) => response.json())
     .then((str) => (new window.DOMParser()).parseFromString(str.contents, 'text/xml'))
+    .then((data) => ({ url, xmlDoc: data }))
 );
 
-const fetchAndCompareFeeds = (feeds) => {
-  // get all feeds
-  const promises = feeds.map((feed) => {
-    return fetchFeed(feed.url)
-  })
-  console.log(promises);
-  // fetch each feed
-  // use promise all settled
-  // compare posts in fetched feed with original one
-  // update prosts that where not rejected and that have new posts
-  // ?set a new timeout maybe here?
-  //
-  // const promise1 = Promise.resolve(3);
-  // const promise2 = new Promise((resolve, reject) => setTimeout(reject, 100, 'foo'));
-  // const promises = [promise1, promise2];
-
-  // Promise.allSettled(promises).
-  //   then((results) => results.forEach((result) => console.log(result.status)));
-};
-
-export const observeFeedsUpdates = (feeds) => {
+export const observeFeedsUpdates = (watchedState) => {
   setTimeout(() => {
-    console.log("In observer");
-    fetchAndCompareFeeds(feeds);
-    // Вызвать еще раз себя в конце, что-б имитировать setInterval?
+    const promises = watchedState.feeds.map((feed) => fetchFeed(feed.url));
+
+    Promise.allSettled(promises)
+      .then((results) => results.forEach((result) => {
+        const { url, xmlDoc } = result.value;
+        const parsedFeed = parseResponse(xmlDoc);
+
+        const latestPostPubDate = new Date(
+          sortPostsByDate(watchedState.posts).find((post) => post.feedId === url).pubDate,
+        );
+        const newPosts = parsedFeed
+          .posts
+          .filter((post) => (post.pubDate.valueOf() - latestPostPubDate.valueOf()) > 0);
+
+        if (newPosts.length) {
+          watchedState.posts.push(newPosts.map((post) => ({ feedId: url, ...post })));
+        }
+      }))
+      .then(() => observeFeedsUpdates(watchedState));
   }, 5000);
 };
-
-// fetchFeed(url)
-//   .then((xmlDoc) => {
-//     const parsedFeed = parseResponse(xmlDoc);
-//     watchedState.feeds.push({ url, ...parsedFeed });
-//   })
-//   .catch(() => {
-//     watchedState.form.errors = [t('networkError')];
-//   });

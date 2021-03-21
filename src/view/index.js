@@ -36,7 +36,7 @@ const renderLists = (t) => {
   });
 };
 
-const renderNewestPosts = (posts, t) => {
+const renderPosts = (posts, t) => {
   const postsContainer = document.querySelector('.posts');
   const ul = postsContainer.querySelector('ul');
   posts.forEach((post) => {
@@ -77,8 +77,6 @@ const renderNewestFeed = (feeds, t) => {
   li.append(h3);
   li.append(p);
   currentList.appendChild(li);
-
-  renderNewestPosts(newestFeed.posts, t);
 };
 
 export default (state, t) => onChange(state, (path, value) => {
@@ -89,6 +87,9 @@ export default (state, t) => onChange(state, (path, value) => {
     case 'feeds':
       renderNewestFeed(value, t);
       resetForm();
+      break;
+    case 'posts':
+      renderPosts(value, t);
       break;
     default:
       break;

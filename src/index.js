@@ -1,5 +1,7 @@
 import * as yup from 'yup';
-import { fetchFeed, observeFeedsUpdates, parseResponse } from './utils/index.js';
+import {
+  fetchFeed, observeFeedsUpdates, parseResponse, sortPostsByDate,
+} from './utils/index.js';
 import localePromise from './initializers/i18n.js';
 import watchState from './view/index.js';
 import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428
@@ -15,6 +17,7 @@ const app = (t) => {
       errors: [],
     },
     feeds: [],
+    posts: [],
   };
 
   yup.setLocale({
@@ -29,7 +32,7 @@ const app = (t) => {
 
   const watchedState = watchState(state, t);
 
-  // observeFeedsUpdates(watchedState.feeds);
+  // observeFeedsUpdates(watchedState);
 
   const validateForm = (formData) => {
     const schema = yup.object().shape({
@@ -53,11 +56,13 @@ const app = (t) => {
       .then(() => {
         watchedState.form.errors = [];
         fetchFeed(url)
-          .then((xmlDoc) => {
+          .then(({ xmlDoc }) => {
             const parsedFeed = parseResponse(xmlDoc);
-            watchedState.feeds.push({ url, ...parsedFeed });
+            watchedState.feeds.push({ url, ...parsedFeed.feed });
+            const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
+            watchedState.posts = sortPostsByDate([...watchedState.posts, ...newPosts]);
 
-            observeFeedsUpdates(watchedState.feeds);
+            observeFeedsUpdates(watchedState);
           })
           .catch(() => {
             watchedState.form.errors = [t('networkError')];
