@@ -37,6 +37,7 @@ const renderLists = (t) => {
 };
 
 const renderPosts = (posts, t) => {
+  console.log('calling renderPosts', posts);
   const postsContainer = document.querySelector('.posts');
   const ul = postsContainer.querySelector('ul');
   posts.forEach((post) => {
@@ -47,7 +48,7 @@ const renderPosts = (posts, t) => {
     a.setAttribute('href', post.postLink);
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
-    a.classList.add('font-weight-bold');
+    a.classList.add('font-weight-bold', post.visited ? 'fw-normal' : 'fw-bold');
     a.textContent = post.postTitle;
 
     const button = document.createElement('button');

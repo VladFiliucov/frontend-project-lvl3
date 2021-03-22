@@ -51,6 +51,10 @@ const app = (t) => {
   const form = document.querySelector('#rss-form');
   const postsNode = document.querySelector('.posts');
 
+  document.querySelector('#activePostModal').addEventListener('hidden.bs.modal', () => {
+    console.log('HIDING MODAL');
+  });
+
   // TODO: check if click events fire on mobile
   postsNode.addEventListener('click', (e) => {
     if (e.target.dataset.id) {
