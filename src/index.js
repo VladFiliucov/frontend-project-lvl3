@@ -19,6 +19,7 @@ const app = (t) => {
     },
     feeds: [],
     posts: [],
+    activePost: null,
   };
 
   yup.setLocale({
@@ -48,6 +49,16 @@ const app = (t) => {
   };
 
   const form = document.querySelector('#rss-form');
+  const postsNode = document.querySelector('.posts');
+
+  // TODO: check if click events fire on mobile
+  postsNode.addEventListener('click', (e) => {
+    if (e.target.dataset.id) {
+      const activePost = watchedState.posts.find((post) => post.id === e.target.dataset.id);
+      activePost.visited = true;
+      watchedState.activePost = activePost;
+    }
+  });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();

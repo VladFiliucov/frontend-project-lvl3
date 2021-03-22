@@ -54,12 +54,12 @@ const renderPosts = (posts, t) => {
     button.setAttribute('type', 'button');
     button.classList.add('btn', 'btn-primary', 'btn-sm');
     button.textContent = t('preview');
+    button.dataset.id = post.id;
     button.dataset.bsToggle = 'modal';
     button.dataset.bsTarget = '#activePostModal';
 
     button.addEventListener('click', () => {
-      console.log('button was clicked set post to active');
-      console.log(post);
+      console.log('was clicked');
     });
 
     li.append(a);
@@ -67,6 +67,10 @@ const renderPosts = (posts, t) => {
 
     ul.appendChild(li);
   });
+};
+
+const renderModal = (activePost) => {
+  console.log('Rendering modal with', activePost);
 };
 
 const renderNewestFeed = (feeds, t) => {
@@ -97,6 +101,9 @@ export default (state, t) => onChange(state, (path, value) => {
       break;
     case 'posts':
       renderPosts(value, t);
+      break;
+    case 'activePost':
+      renderModal(value, t);
       break;
     default:
       break;
