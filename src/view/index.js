@@ -54,6 +54,13 @@ const renderPosts = (posts, t) => {
     button.setAttribute('type', 'button');
     button.classList.add('btn', 'btn-primary', 'btn-sm');
     button.textContent = t('preview');
+    button.dataset.bsToggle = 'modal';
+    button.dataset.bsTarget = '#activePostModal';
+
+    button.addEventListener('click', () => {
+      console.log('button was clicked set post to active');
+      console.log(post);
+    });
 
     li.append(a);
     li.append(button);
