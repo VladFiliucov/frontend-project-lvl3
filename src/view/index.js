@@ -37,9 +37,10 @@ const renderLists = (t) => {
 };
 
 const renderPosts = (posts, t) => {
-  console.log('calling renderPosts', posts);
   const postsContainer = document.querySelector('.posts');
+
   const ul = postsContainer.querySelector('ul');
+  ul.innerHTML = '';
   posts.forEach((post) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
@@ -48,6 +49,7 @@ const renderPosts = (posts, t) => {
     a.setAttribute('href', post.postLink);
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
+    a.dataset.id = post.id;
     a.classList.add('font-weight-bold', post.visited ? 'fw-normal' : 'fw-bold');
     a.textContent = post.postTitle;
 
@@ -59,10 +61,6 @@ const renderPosts = (posts, t) => {
     button.dataset.bsToggle = 'modal';
     button.dataset.bsTarget = '#activePostModal';
 
-    button.addEventListener('click', () => {
-      console.log('was clicked');
-    });
-
     li.append(a);
     li.append(button);
 
@@ -70,8 +68,18 @@ const renderPosts = (posts, t) => {
   });
 };
 
-const renderModal = (activePost) => {
-  console.log('Rendering modal with', activePost);
+const renderModal = (activePost, t) => {
+  if (!activePost) return;
+
+  const title = document.querySelector('#activePostModalLabel');
+  title.textContent = activePost.postTitle;
+  const description = document.querySelector('.modal-body');
+  description.textContent = activePost.postDescription;
+  const closeBtn = document.querySelector('#close-btn');
+  closeBtn.textContent = t('close');
+  const readMoreLink = document.querySelector('#read-more-link');
+  readMoreLink.textContent = t('readMore');
+  readMoreLink.setAttribute('href', activePost.postLink);
 };
 
 const renderNewestFeed = (feeds, t) => {

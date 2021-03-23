@@ -12,6 +12,8 @@ export default i18next.init({
         preview: 'Preview',
         posts: 'Posts',
         feeds: 'Feeds',
+        close: 'Close',
+        readMore: 'Read more',
       },
     },
     ru: {
@@ -22,6 +24,8 @@ export default i18next.init({
         preview: 'Просмотр',
         posts: 'Публикации',
         feeds: 'Фиды',
+        close: 'Закрыть',
+        readMore: 'Читать полностью',
       },
     },
   },

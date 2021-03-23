@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import {
-  fetchFeed, observeFeedsUpdates, parseResponse, sortPostsByDate,
+  fetchFeed, observeFeedsUpdates, parseResponse,
 } from './utils/index.js';
 import localePromise from './initializers/i18n.js';
 import watchState from './view/index.js';
@@ -52,14 +52,16 @@ const app = (t) => {
   const postsNode = document.querySelector('.posts');
 
   document.querySelector('#activePostModal').addEventListener('hidden.bs.modal', () => {
-    console.log('HIDING MODAL');
+    const { activePost } = watchedState;
+    const activePostIndex = watchedState.posts.findIndex((post) => post.id === activePost.id);
+    watchedState.posts.splice(activePostIndex, 1, { ...activePost, visited: true });
+    watchedState.activePost = null;
   });
 
   // TODO: check if click events fire on mobile
   postsNode.addEventListener('click', (e) => {
     if (e.target.dataset.id) {
       const activePost = watchedState.posts.find((post) => post.id === e.target.dataset.id);
-      activePost.visited = true;
       watchedState.activePost = activePost;
     }
   });
@@ -76,7 +78,7 @@ const app = (t) => {
             const parsedFeed = parseResponse(xmlDoc);
             watchedState.feeds.push({ url, ...parsedFeed.feed });
             const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
-            watchedState.posts = sortPostsByDate([...watchedState.posts, ...newPosts]);
+            watchedState.posts = [...newPosts, ...state.posts];
 
             observeFeedsUpdates(watchedState);
           })
