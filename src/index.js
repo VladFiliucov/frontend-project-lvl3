@@ -35,17 +35,16 @@ const app = (t) => {
 
   observeFeedsUpdates(watchedState);
 
-  const validateForm = (formData) => {
-    const schema = yup.object().shape({
-      feedUrl: yup
-        .string()
-        .required()
-        .url()
-        .notOneOf(watchedState.feeds.map((feed) => feed.url)),
-    });
+  const schema = yup.object().shape({
+    feedUrl: yup
+      .string()
+      .required()
+      .url(),
+  });
 
-    return schema.validate(formData);
-  };
+  const validateForm = (formData) => schema
+    .notOneOf(watchedState.feeds.map((feed) => feed.url))
+    .validate(formData);
 
   const form = document.querySelector('#rss-form');
   const postsNode = document.querySelector('.posts');
