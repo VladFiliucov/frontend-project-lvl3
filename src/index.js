@@ -35,16 +35,11 @@ const app = (t) => {
 
   observeFeedsUpdates(watchedState);
 
-  const schema = yup.object().shape({
-    feedUrl: yup
-      .string()
-      .required()
-      .url(),
-  });
+  const schema = yup.string().required().url();
 
-  const validateForm = (formData) => schema
+  const validateURL = (feedUrl) => schema
     .notOneOf(watchedState.feeds.map((feed) => feed.url))
-    .validate(formData);
+    .validate(feedUrl);
 
   const form = document.querySelector('#rss-form');
   const postsNode = document.querySelector('.posts');
@@ -68,7 +63,7 @@ const app = (t) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const url = formData.get('url');
-    validateForm({ feedUrl: url })
+    validateURL(url)
       .then(() => {
         watchedState.form.errors = [];
         fetchFeed(url)
