@@ -24,11 +24,10 @@ const app = (t) => {
 
   yup.setLocale({
     string: {
-      // Почему не сработало просто с ключем?
-      url: t('urlInvalid'),
+      url: 'urlInvalid',
     },
     mixed: {
-      notOneOf: t('existingRSS'),
+      notOneOf: 'existingRSS',
     },
   });
 

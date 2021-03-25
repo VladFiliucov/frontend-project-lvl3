@@ -1,6 +1,6 @@
 import onChange from 'on-change';
 
-const renderErrors = (errors) => {
+const renderErrors = (errors, text) => {
   const errorMessage = errors[0];
   const input = document.querySelector('input');
   const errorMessageDiv = document.querySelector('.feedback');
@@ -13,7 +13,7 @@ const renderErrors = (errors) => {
 
   input.classList.add('is-invalid');
   errorMessageDiv.classList.add('text-success', 'text-danger');
-  errorMessageDiv.textContent = errorMessage;
+  errorMessageDiv.textContent = text(errorMessage);
 };
 
 const resetForm = () => {
@@ -102,7 +102,7 @@ const renderNewestFeed = (feeds, t) => {
 export default (state, t) => onChange(state, (path, value) => {
   switch (path) {
     case 'form.errors':
-      renderErrors(value);
+      renderErrors(value, t);
       break;
     case 'feeds':
       renderNewestFeed(value, t);
