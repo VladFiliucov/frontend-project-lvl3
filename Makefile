@@ -1,6 +1,5 @@
 install:
 	npm i
-	npm pack
 
 lint:
 	npx eslint .
