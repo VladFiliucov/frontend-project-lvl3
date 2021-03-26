@@ -37,9 +37,16 @@ const app = (t) => {
 
   const schema = yup.string().required().url();
 
-  const validateURL = (feedUrl) => schema
-    .notOneOf(watchedState.feeds.map((feed) => feed.url))
-    .validate(feedUrl);
+  const getValidationErrors = (feedUrl) => {
+    try {
+      schema
+        .notOneOf(watchedState.feeds.map((feed) => feed.url))
+        .validateSync(feedUrl);
+      return [];
+    } catch (err) {
+      return err.errors;
+    }
+  };
 
   const form = document.querySelector('#rss-form');
   const postsNode = document.querySelector('.posts');
@@ -63,23 +70,20 @@ const app = (t) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const url = formData.get('url');
-    validateURL(url)
-      .then(() => {
-        watchedState.form.errors = [];
-        fetchFeed(url)
-          .then(({ xmlDoc }) => {
-            const parsedFeed = parseResponse(xmlDoc);
-            watchedState.feeds.push({ url, ...parsedFeed.feed });
-            const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
-            watchedState.posts = [...newPosts, ...state.posts];
-          })
-          .catch(() => {
-            watchedState.form.errors = [t('networkError')];
-          });
-      })
-      .catch((err) => {
-        watchedState.form.errors = err.errors;
-      });
+    watchedState.form.errors = getValidationErrors(url);
+
+    if (watchedState.form.errors.length === 0) {
+      fetchFeed(url)
+        .then(({ xmlDoc }) => {
+          const parsedFeed = parseResponse(xmlDoc);
+          watchedState.feeds.push({ url, ...parsedFeed.feed });
+          const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
+          watchedState.posts = [...newPosts, ...state.posts];
+        })
+        .catch(() => {
+          watchedState.form.errors = [t('networkError')];
+        });
+    }
   });
 };
 
