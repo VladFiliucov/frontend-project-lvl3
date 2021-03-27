@@ -91,7 +91,7 @@ const app = (t) => {
       .then(({ xmlDoc }) => {
         const parsedFeed = parseResponse(xmlDoc);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
-        const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
+        const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];
         watchedState.form.status = FORM_STATES.untouched;
       })

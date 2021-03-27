@@ -20,7 +20,6 @@ export const parseResponse = (data) => {
       link: postLink,
       title: postTitle,
       description: postDescription,
-      id: postLink,
       pubDate: new Date(pubDate),
     });
   });
