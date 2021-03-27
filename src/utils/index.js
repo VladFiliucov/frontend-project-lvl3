@@ -1,5 +1,5 @@
-export const sortPostsByDate = (posts) => posts
-  .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+import differenceWith from 'lodash/differenceWith.js';
+import isEqual from 'lodash/isEqual.js';
 
 export const parseResponse = (data) => {
   const parserError = document.querySelector('parsererror');
@@ -14,13 +14,11 @@ export const parseResponse = (data) => {
     const postLink = item.querySelector('link').textContent;
     const postTitle = item.querySelector('title').textContent;
     const postDescription = item.querySelector('description').textContent;
-    const pubDate = item.querySelector('pubDate').textContent;
 
     return ({
       link: postLink,
       title: postTitle,
       description: postDescription,
-      pubDate: new Date(pubDate),
     });
   });
 
@@ -29,7 +27,7 @@ export const parseResponse = (data) => {
       title,
       description,
     },
-    posts: sortPostsByDate(posts),
+    posts,
   };
 };
 
@@ -56,14 +54,13 @@ export const observeFeedsUpdates = (watchedState) => {
           return;
         }
 
-        const latestPostPubDate = new Date(
-          sortPostsByDate(watchedState.posts).find((post) => post.feedId === url).pubDate,
-        );
-        const newPosts = parsedFeed
+        const savedPosts = watchedState.posts.filter((post) => post.feedId === url);
+        const latestPosts = parsedFeed
           .posts
-          .filter((post) => (post.pubDate.valueOf() - latestPostPubDate.valueOf()) > 0);
+          .map((post) => ({ feedId: url, id: post.link, ...post }));
 
-        watchedState.posts.push(newPosts.map((post) => ({ feedId: url, id: post.link, ...post })));
+        const newPosts = differenceWith(savedPosts, latestPosts, isEqual);
+        watchedState.posts.push([...newPosts]);
       }))
       .then(() => observeFeedsUpdates(watchedState));
   }, 5000);
