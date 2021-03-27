@@ -63,9 +63,7 @@ export const observeFeedsUpdates = (watchedState) => {
           .posts
           .filter((post) => (post.pubDate.valueOf() - latestPostPubDate.valueOf()) > 0);
 
-        if (newPosts.length) {
-          watchedState.posts.push(newPosts.map((post) => ({ feedId: url, ...post })));
-        }
+        watchedState.posts.push(newPosts.map((post) => ({ feedId: url, id: post.link, ...post })));
       }))
       .then(() => observeFeedsUpdates(watchedState));
   }, 5000);
