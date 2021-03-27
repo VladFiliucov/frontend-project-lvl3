@@ -31,8 +31,7 @@ export const parseResponse = (data) => {
 export const fetchFeed = (url) => (
   fetch(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
     .then((response) => response.json())
-    .then((str) => (new window.DOMParser()).parseFromString(str.contents, 'text/xml'))
-    .then((data) => ({ url, xmlDoc: data }))
+    .then((str) => ({ url, xmlDoc: (new window.DOMParser()).parseFromString(str.contents, 'text/xml') }))
 );
 
 export const observeFeedsUpdates = (watchedState) => {
