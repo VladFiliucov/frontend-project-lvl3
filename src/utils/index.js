@@ -60,7 +60,8 @@ export const observeFeedsUpdates = (watchedState) => {
           .map((post) => ({ feedId: url, id: post.link, ...post }));
 
         const newPosts = differenceWith(savedPosts, latestPosts, isEqual);
-        watchedState.posts.push([...newPosts]);
+
+        if (newPosts.length > 0) watchedState.posts.push([...newPosts]);
       }))
       .then(() => observeFeedsUpdates(watchedState));
   }, 5000);
