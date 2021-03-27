@@ -50,8 +50,9 @@ const app = (t) => {
 
   const form = document.querySelector('#rss-form');
   const postsNode = document.querySelector('.posts');
+  const activePostModal = document.querySelector('#activePostModal');
 
-  document.querySelector('#activePostModal').addEventListener('hidden.bs.modal', () => {
+  activePostModal.addEventListener('hidden.bs.modal', () => {
     const { activePost } = watchedState;
     const activePostIndex = watchedState.posts.findIndex((post) => post.id === activePost.id);
     watchedState.posts.splice(activePostIndex, 1, { ...activePost, visited: true });
