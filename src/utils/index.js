@@ -17,9 +17,9 @@ export const parseResponse = (data) => {
     const pubDate = item.querySelector('pubDate').textContent;
 
     return ({
-      postLink,
-      postTitle,
-      postDescription,
+      link: postLink,
+      title: postTitle,
+      description: postDescription,
       id: postLink,
       pubDate: new Date(pubDate),
     });

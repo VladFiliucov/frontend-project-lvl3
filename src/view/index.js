@@ -78,12 +78,12 @@ const renderPosts = (posts, t, visitedPostsIds) => {
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
 
     const a = document.createElement('a');
-    a.setAttribute('href', post.postLink);
+    a.setAttribute('href', post.link);
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
     a.dataset.id = post.id;
     a.classList.add('font-weight-bold', isVisited ? 'fw-normal' : 'fw-bold');
-    a.textContent = post.postTitle;
+    a.textContent = post.title;
 
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
@@ -104,14 +104,14 @@ const renderModal = (activePost, t) => {
   if (!activePost) return;
 
   const title = document.querySelector('#activePostModalLabel');
-  title.textContent = activePost.postTitle;
+  title.textContent = activePost.title;
   const description = document.querySelector('.modal-body');
-  description.textContent = activePost.postDescription;
+  description.textContent = activePost.description;
   const closeBtn = document.querySelector('#close-btn');
   closeBtn.textContent = t('close');
   const readMoreLink = document.querySelector('#read-more-link');
   readMoreLink.textContent = t('readMore');
-  readMoreLink.setAttribute('href', activePost.postLink);
+  readMoreLink.setAttribute('href', activePost.link);
 };
 
 const renderNewestFeed = (feeds, t) => {
