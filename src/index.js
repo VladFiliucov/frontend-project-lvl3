@@ -2,6 +2,7 @@ import * as yup from 'yup';
 import {
   fetchFeed, observeFeedsUpdates, parseResponse,
 } from './utils/index.js';
+import * as FORM_STATES from './constants/index.js';
 import localePromise from './initializers/i18n.js';
 import watchState from './view/index.js';
 import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428
@@ -11,7 +12,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 const app = (t) => {
   const state = {
     form: {
-      status: 'untouched',
+      status: FORM_STATES.untouched,
       processError: null,
       url: '',
       valid: false,
@@ -32,7 +33,15 @@ const app = (t) => {
     },
   });
 
-  const watchedState = watchState(state, t);
+  const form = document.querySelector('#rss-form');
+  const submitButton = form.querySelector('button');
+  const input = form.querySelector('input');
+  const postsNode = document.querySelector('.posts');
+  const activePostModal = document.querySelector('#activePostModal');
+
+  const selectors = { postsNode, formElements: { form, submitButton, input } };
+
+  const watchedState = watchState(state, t, selectors);
 
   observeFeedsUpdates(watchedState);
 
@@ -48,10 +57,6 @@ const app = (t) => {
       return err.errors;
     }
   };
-
-  const form = document.querySelector('#rss-form');
-  const postsNode = document.querySelector('.posts');
-  const activePostModal = document.querySelector('#activePostModal');
 
   activePostModal.addEventListener('hidden.bs.modal', () => {
     watchedState.activePost = null;
@@ -72,18 +77,28 @@ const app = (t) => {
     const url = formData.get('url');
     watchedState.form.errors = getValidationErrors(url);
 
-    if (watchedState.form.errors.length === 0) {
-      fetchFeed(url)
-        .then(({ xmlDoc }) => {
-          const parsedFeed = parseResponse(xmlDoc);
-          watchedState.feeds.push({ url, ...parsedFeed.feed });
-          const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
-          watchedState.posts = [...newPosts, ...state.posts];
-        })
-        .catch(() => {
-          watchedState.form.errors = [t('networkError')];
-        });
+    if (watchedState.form.errors.length > 0) {
+      watchedState.form.status = FORM_STATES.hasErrors;
+      return;
     }
+
+    watchedState.form.status = FORM_STATES.submitting;
+    fetchFeed(url)
+      .catch(() => {
+        watchedState.form.errors = ['networkError'];
+        watchedState.form.status = FORM_STATES.hasErrors;
+      })
+      .then(({ xmlDoc }) => {
+        const parsedFeed = parseResponse(xmlDoc);
+        watchedState.feeds.push({ url, ...parsedFeed.feed });
+        const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, ...post }));
+        watchedState.posts = [...newPosts, ...state.posts];
+        watchedState.form.status = FORM_STATES.untouched;
+      })
+      .catch(() => {
+        watchedState.form.errors = ['parsingError'];
+        watchedState.form.status = FORM_STATES.hasErrors;
+      });
   });
 };
 

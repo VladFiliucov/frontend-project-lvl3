@@ -1,4 +1,5 @@
 import onChange from 'on-change';
+import * as FORM_STATES from '../constants/index.js';
 
 const renderErrors = (errors, text) => {
   const errorMessage = errors[0];
@@ -16,9 +17,39 @@ const renderErrors = (errors, text) => {
   errorMessageDiv.textContent = text(errorMessage);
 };
 
-const resetForm = () => {
-  const form = document.querySelector('#rss-form');
+const enableInteraction = ({ submitButton, input }) => {
+  submitButton.removeAttribute('disabled');
+  input.removeAttribute('readOnly');
+};
+
+const disableInteraction = ({ submitButton, input }) => {
+  submitButton.setAttribute('disabled', true);
+  input.setAttribute('readOnly', true);
+};
+
+const resetForm = ({ form, submitButton, input }) => {
+  enableInteraction({ input, submitButton });
   form.reset();
+};
+
+const renderForm = (formState, text, formElements) => {
+  const { status, errors } = formState;
+
+  switch (status) {
+    case FORM_STATES.untouched:
+      resetForm(formElements);
+      break;
+    case FORM_STATES.hasErrors:
+      renderErrors(errors, text);
+      enableInteraction(formElements);
+      break;
+    case FORM_STATES.submitting:
+      renderErrors(errors, text);
+      disableInteraction(formElements);
+      break;
+    default:
+      throw new Error(`form status ${status} not handled`);
+  }
 };
 
 const renderLists = (t) => {
@@ -100,14 +131,13 @@ const renderNewestFeed = (feeds, t) => {
   currentList.appendChild(li);
 };
 
-export default (state, t) => onChange(state, (path, value) => {
+export default (state, t, selectors) => onChange(state, (path, value) => {
   switch (path) {
-    case 'form.errors':
-      renderErrors(value, t);
+    case 'form.status':
+      renderForm(state.form, t, selectors.formElements);
       break;
     case 'feeds':
       renderNewestFeed(value, t);
-      resetForm();
       break;
     case 'posts':
       renderPosts(value, t, state.visitedPostIds);
