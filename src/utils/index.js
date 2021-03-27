@@ -2,6 +2,12 @@ export const sortPostsByDate = (posts) => posts
   .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
 export const parseResponse = (data) => {
+  const parserError = document.querySelector('parsererror');
+
+  if (parserError) {
+    throw new Error(`Parsing error: ${parserError.textContent}`);
+  }
+
   const title = data.querySelector('channel > title').textContent;
   const description = data.querySelector('channel > description').textContent;
   const posts = [...data.querySelectorAll('item')].map((item) => {
