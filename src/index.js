@@ -20,6 +20,7 @@ const app = (t) => {
     feeds: [],
     posts: [],
     activePost: null,
+    visitedPostIds: [],
   };
 
   yup.setLocale({
@@ -53,9 +54,6 @@ const app = (t) => {
   const activePostModal = document.querySelector('#activePostModal');
 
   activePostModal.addEventListener('hidden.bs.modal', () => {
-    const { activePost } = watchedState;
-    const activePostIndex = watchedState.posts.findIndex((post) => post.id === activePost.id);
-    watchedState.posts.splice(activePostIndex, 1, { ...activePost, visited: true });
     watchedState.activePost = null;
   });
 
@@ -64,6 +62,7 @@ const app = (t) => {
     if (e.target.dataset.id) {
       const activePost = watchedState.posts.find((post) => post.id === e.target.dataset.id);
       watchedState.activePost = activePost;
+      watchedState.visitedPostIds.push(activePost.id);
     }
   });
 

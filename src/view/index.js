@@ -36,12 +36,13 @@ const renderLists = (t) => {
   });
 };
 
-const renderPosts = (posts, t) => {
+const renderPosts = (posts, t, visitedPostsIds) => {
   const postsContainer = document.querySelector('.posts');
 
   const ul = postsContainer.querySelector('ul');
   ul.innerHTML = '';
   posts.forEach((post) => {
+    const isVisited = visitedPostsIds.includes(post.id);
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
 
@@ -50,7 +51,7 @@ const renderPosts = (posts, t) => {
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
     a.dataset.id = post.id;
-    a.classList.add('font-weight-bold', post.visited ? 'fw-normal' : 'fw-bold');
+    a.classList.add('font-weight-bold', isVisited ? 'fw-normal' : 'fw-bold');
     a.textContent = post.postTitle;
 
     const button = document.createElement('button');
@@ -109,7 +110,10 @@ export default (state, t) => onChange(state, (path, value) => {
       resetForm();
       break;
     case 'posts':
-      renderPosts(value, t);
+      renderPosts(value, t, state.visitedPostIds);
+      break;
+    case 'visitedPostIds':
+      renderPosts(state.posts, t, value);
       break;
     case 'activePost':
       renderModal(value, t);
