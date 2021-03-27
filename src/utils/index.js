@@ -44,9 +44,17 @@ export const observeFeedsUpdates = (watchedState) => {
     const promises = watchedState.feeds.map((feed) => fetchFeed(feed.url));
 
     Promise.allSettled(promises)
-      .then((results) => results.forEach((result) => {
-        const { url, xmlDoc } = result.value;
-        const parsedFeed = parseResponse(xmlDoc);
+      .then((results) => results.forEach(({ value, status }) => {
+        if (status === 'rejected') return;
+
+        const { url, xmlDoc } = value;
+
+        let parsedFeed;
+        try {
+          parsedFeed = parseResponse(xmlDoc);
+        } catch {
+          return;
+        }
 
         const latestPostPubDate = new Date(
           sortPostsByDate(watchedState.posts).find((post) => post.feedId === url).pubDate,
