@@ -2,13 +2,13 @@ export const sortPostsByDate = (posts) => posts
   .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
 export const parseResponse = (data) => {
-  const title = data.getElementsByTagName('title')[0].childNodes[0].nodeValue;
-  const description = data.getElementsByTagName('description')[0].childNodes[0].nodeValue;
+  const title = data.querySelector('channel > title').textContent;
+  const description = data.querySelector('channel > description').textContent;
   const posts = [...data.querySelectorAll('item')].map((item) => {
-    const postLink = item.querySelector('link').innerHTML;
-    const postTitle = item.querySelector('title').innerHTML;
-    const postDescription = item.querySelector('description').innerHTML;
-    const pubDate = item.querySelector('pubDate').innerHTML;
+    const postLink = item.querySelector('link').textContent;
+    const postTitle = item.querySelector('title').textContent;
+    const postDescription = item.querySelector('description').textContent;
+    const pubDate = item.querySelector('pubDate').textContent;
 
     return ({
       postLink,
