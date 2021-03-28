@@ -1,6 +1,5 @@
 import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
-// import fetch from 'node-fetch';
 import axios from 'axios';
 
 export const parseResponse = (data) => {
