@@ -24,7 +24,7 @@ export default i18next.init({
         networkError: 'Произошла ошибка сети. Попробуйте еще раз',
         urlInvalid: 'Ссылка должна быть валидным URL',
         existingRSS: 'RSS уже существует',
-        parsingError: 'Не получилось извлечь RSS по данной ссылке',
+        parsingError: 'Ресурс не содержит валидный RSS',
         preview: 'Просмотр',
         posts: 'Публикации',
         feeds: 'Фиды',
