@@ -31,8 +31,15 @@ export const parseResponse = (data) => {
   };
 };
 
+const constructURL = (url) => {
+  const fullURL = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
+  fullURL.searchParams.set('url', url);
+
+  return fullURL;
+};
+
 export const fetchFeed = (url) => (
-  fetch(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
+  fetch(constructURL(url))
     .then((response) => response.json())
     .then((str) => ({ url, xmlDoc: (new window.DOMParser()).parseFromString(str.contents, 'text/xml') }))
 );
