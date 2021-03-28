@@ -89,21 +89,21 @@ const app = (t) => {
 
     watchedState.form.status = FORM_STATES.submitting;
     fetchFeed(url)
-      .catch(() => {
-        watchedState.form.errors = ['networkError'];
-        watchedState.form.status = FORM_STATES.hasErrors;
-      })
+      // .catch(() => {
+      //   watchedState.form.errors = ['networkError'];
+      //   watchedState.form.status = FORM_STATES.hasErrors;
+      // })
       .then(({ xmlDoc }) => {
         const parsedFeed = parseResponse(xmlDoc);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];
         watchedState.form.status = FORM_STATES.success;
-      })
-      .catch(() => {
-        watchedState.form.errors = ['parsingError'];
-        watchedState.form.status = FORM_STATES.hasErrors;
       });
+    // .catch(() => {
+    //   watchedState.form.errors = ['parsingError'];
+    //   watchedState.form.status = FORM_STATES.hasErrors;
+    // });
   });
 };
 

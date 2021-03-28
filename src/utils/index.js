@@ -44,6 +44,10 @@ const constructURL = (url) => {
 export const fetchFeed = (url) => (
   axios.get(constructURL(url))
     .then(({ data }) => ({ url, xmlDoc: (new DOMParser()).parseFromString(data.contents, 'text/xml') }))
+    .catch((error) => {
+      console.log(error);
+      throw new Error(error);
+    })
 );
 
 export const observeFeedsUpdates = (watchedState) => {
