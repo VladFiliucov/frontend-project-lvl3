@@ -44,10 +44,6 @@ const constructURL = (url) => {
 export const fetchFeed = (url) => (
   axios.get(constructURL(url).toString())
     .then(({ data }) => ({ url, xmlDoc: (new DOMParser()).parseFromString(data.contents, 'text/xml') }))
-    .catch((error) => {
-      console.log(error);
-      throw new Error(error);
-    })
 );
 
 export const observeFeedsUpdates = (watchedState) => {
@@ -60,12 +56,12 @@ export const observeFeedsUpdates = (watchedState) => {
 
         const { url, xmlDoc } = value;
 
-        let parsedFeed;
         try {
-          parsedFeed = parseResponse(xmlDoc);
+          parseResponse(xmlDoc);
         } catch {
           return;
         }
+        const parsedFeed = parseResponse(xmlDoc);
 
         const savedPosts = watchedState.posts.filter((post) => post.feedId === url);
         const latestPosts = parsedFeed

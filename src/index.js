@@ -93,9 +93,7 @@ const app = (t) => {
         watchedState.form.errors = ['networkError'];
         watchedState.form.status = FORM_STATES.hasErrors;
       })
-      .then((resp) => {
-        console.log(resp);
-        const { xmlDoc } = resp;
+      .then(({ xmlDoc }) => {
         const parsedFeed = parseResponse(xmlDoc);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));

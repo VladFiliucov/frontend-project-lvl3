@@ -12,7 +12,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
  */
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-const __dirname = process.cwd();
+const dirname = process.cwd();
 
 export default {
   mode: 'development',
@@ -27,7 +27,7 @@ export default {
 
   entry: './src/entry.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(dirname, 'dist'),
     filename: 'bundle.js',
   },
 
@@ -35,7 +35,7 @@ export default {
     rules: [{
       test: /\.js$/,
       exclude: /node_modules/,
-      include: [path.resolve(__dirname, 'src')],
+      include: [path.resolve(dirname, 'src')],
       use: {
         loader: 'babel-loader',
       },
