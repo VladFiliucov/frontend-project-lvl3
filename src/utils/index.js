@@ -1,6 +1,7 @@
 import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
+import axios from 'axios';
 
 export const parseResponse = (data) => {
   const parserError = document.querySelector('parsererror');
@@ -40,9 +41,8 @@ const constructURL = (url) => {
 };
 
 export const fetchFeed = (url) => (
-  fetch(constructURL(url))
-    .then((response) => response.json())
-    .then((str) => ({ url, xmlDoc: (new window.DOMParser()).parseFromString(str.contents, 'text/xml') }))
+  axios.get(constructURL(url))
+    .then(({ data }) => ({ url, xmlDoc: (new window.DOMParser()).parseFromString(data.contents, 'text/xml') }))
 );
 
 export const observeFeedsUpdates = (watchedState) => {
