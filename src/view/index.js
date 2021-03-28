@@ -94,7 +94,7 @@ const renderPosts = (posts, t, visitedPostsIds) => {
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
     a.dataset.id = post.id;
-    a.classList.add('font-weight-bold', isVisited ? 'fw-normal' : 'fw-bold');
+    a.classList.add(isVisited ? 'fw-normal' : 'fw-bold');
     a.textContent = post.title;
 
     const button = document.createElement('button');
