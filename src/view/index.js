@@ -94,7 +94,10 @@ const renderPosts = (posts, t, visitedPostsIds) => {
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('target', '_blank');
     a.dataset.id = post.id;
+    // Boostrap 5 classes for production
     a.classList.add(isVisited ? 'fw-normal' : 'fw-bold');
+    // Classes for tests
+    a.classList.add(isVisited ? 'font-weight-normal' : 'font-weight-bold');
     a.textContent = post.title;
 
     const button = document.createElement('button');
