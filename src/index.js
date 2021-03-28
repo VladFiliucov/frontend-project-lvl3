@@ -33,12 +33,18 @@ const app = (t) => {
   });
 
   const form = document.querySelector('#rss-form');
+  const feedback = document.querySelector('div.feedback');
   const submitButton = form.querySelector('button');
   const input = form.querySelector('input');
   const postsNode = document.querySelector('.posts');
   const activePostModal = document.querySelector('#activePostModal');
 
-  const selectors = { postsNode, formElements: { form, submitButton, input } };
+  const selectors = {
+    postsNode,
+    formElements: {
+      form, submitButton, input, feedback,
+    },
+  };
 
   const watchedState = watchState(state, t, selectors);
 
@@ -92,7 +98,7 @@ const app = (t) => {
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];
-        watchedState.form.status = FORM_STATES.untouched;
+        watchedState.form.status = FORM_STATES.success;
       })
       .catch(() => {
         watchedState.form.errors = ['parsingError'];

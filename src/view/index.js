@@ -1,10 +1,9 @@
 import onChange from 'on-change';
 import * as FORM_STATES from '../constants/index.js';
 
-const renderErrors = (errors, text) => {
+const renderErrors = (errors, text, { input, feedback }) => {
   const errorMessage = errors[0];
-  const input = document.querySelector('input');
-  const errorMessageDiv = document.querySelector('.feedback');
+  const errorMessageDiv = feedback;
 
   if (errors.length === 0) {
     input.classList.remove('is-invalid');
@@ -13,7 +12,8 @@ const renderErrors = (errors, text) => {
   }
 
   input.classList.add('is-invalid');
-  errorMessageDiv.classList.add('text-success', 'text-danger');
+  errorMessageDiv.classList.remove('text-success');
+  errorMessageDiv.classList.add('text-danger');
   errorMessageDiv.textContent = text(errorMessage);
 };
 
@@ -32,6 +32,14 @@ const resetForm = ({ form, submitButton, input }) => {
   form.reset();
 };
 
+const showSuccessFlash = (feedbackElement, text) => {
+  const successMessageDiv = feedbackElement;
+  successMessageDiv.classList.remove('text-danger');
+  successMessageDiv.classList.add('text-success');
+
+  successMessageDiv.innerHTML = text('success');
+};
+
 const renderForm = (formState, text, formElements) => {
   const { status, errors } = formState;
 
@@ -40,12 +48,16 @@ const renderForm = (formState, text, formElements) => {
       resetForm(formElements);
       break;
     case FORM_STATES.hasErrors:
-      renderErrors(errors, text);
+      renderErrors(errors, text, formElements);
       enableInteraction(formElements);
       break;
     case FORM_STATES.submitting:
-      renderErrors(errors, text);
+      renderErrors(errors, text, formElements);
       disableInteraction(formElements);
+      break;
+    case FORM_STATES.success:
+      resetForm(formElements);
+      showSuccessFlash(formElements.feedback, text);
       break;
     default:
       throw new Error(`form status ${status} not handled`);
