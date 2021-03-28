@@ -1,7 +1,8 @@
 import i18next from 'i18next';
 
 export default i18next.init({
-  lng: navigator.language,
+  // lng: navigator.language,
+  lng: 'ru',
   resources: {
     'en-US': {
       translation: {
