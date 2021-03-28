@@ -1,5 +1,6 @@
 import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
+import fetch from 'node-fetch';
 
 export const parseResponse = (data) => {
   const parserError = document.querySelector('parsererror');
