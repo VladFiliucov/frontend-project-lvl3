@@ -95,17 +95,17 @@ const app = (t) => {
       })
       .then((resp) => {
         console.log(resp);
-        const xmlDoc = resp.xmlDoc;
+        const { xmlDoc } = resp;
         const parsedFeed = parseResponse(xmlDoc);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];
         watchedState.form.status = FORM_STATES.success;
+      })
+      .catch(() => {
+        watchedState.form.errors = ['parsingError'];
+        watchedState.form.status = FORM_STATES.hasErrors;
       });
-    .catch(() => {
-      watchedState.form.errors = ['parsingError'];
-      watchedState.form.status = FORM_STATES.hasErrors;
-    });
   });
 };
 
