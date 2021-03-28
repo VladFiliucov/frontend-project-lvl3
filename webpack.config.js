@@ -25,7 +25,7 @@ export default {
     new MiniCssExtractPlugin({ filename: 'main.[contenthash].css' }),
   ],
 
-  entry: './src/index.js',
+  entry: './src/entry.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
