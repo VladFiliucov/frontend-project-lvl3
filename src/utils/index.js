@@ -42,7 +42,7 @@ const constructURL = (url) => {
 };
 
 export const fetchFeed = (url) => (
-  axios.get(constructURL(url))
+  axios.get(constructURL(url).toString())
     .then(({ data }) => ({ url, xmlDoc: (new DOMParser()).parseFromString(data.contents, 'text/xml') }))
     .catch((error) => {
       console.log(error);
