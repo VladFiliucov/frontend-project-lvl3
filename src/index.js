@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import {
-  fetchFeed, observeFeedsUpdates, parseResponse,
+  fetchFeed, observeFeedsUpdates, parseFeed,
 } from './utils/index.js';
 import * as FORM_STATES from './constants/index.js';
 import localePromise from './initializers/i18n.js';
@@ -94,7 +94,7 @@ const app = (t) => {
         watchedState.form.status = FORM_STATES.hasErrors;
       })
       .then(({ xmlDoc }) => {
-        const parsedFeed = parseResponse(xmlDoc);
+        const parsedFeed = parseFeed(xmlDoc);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];

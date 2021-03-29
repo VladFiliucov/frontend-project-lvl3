@@ -2,7 +2,7 @@ import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
 import axios from 'axios';
 
-export const parseResponse = (data) => {
+export const parseFeed = (data) => {
   const parserError = document.querySelector('parsererror');
 
   if (parserError) {
@@ -56,11 +56,11 @@ export const observeFeedsUpdates = (watchedState) => {
         const { url, xmlDoc } = value;
 
         try {
-          parseResponse(xmlDoc);
+          parseFeed(xmlDoc);
         } catch {
           return;
         }
-        const parsedFeed = parseResponse(xmlDoc);
+        const parsedFeed = parseFeed(xmlDoc);
 
         const savedPosts = watchedState.posts.filter((post) => post.feedId === url);
         const latestPosts = parsedFeed
