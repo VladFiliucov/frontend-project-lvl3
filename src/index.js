@@ -106,6 +106,6 @@ const app = (t) => {
   observeFeedsUpdates(watchedState);
 };
 
-export default () => localePromise.then((text) => {
+export default () => localePromise().then((text) => {
   app(text);
 });
