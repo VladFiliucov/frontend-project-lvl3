@@ -2,16 +2,19 @@ import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
 import axios from 'axios';
 
-export const parseFeed = (data) => {
-  const parserError = document.querySelector('parsererror');
+import * as FORM_STATES from '../constants/index.js';
+
+export const parseFeed = (rawFeed) => {
+  const xmlDoc = (new DOMParser()).parseFromString(rawFeed, 'text/xml');
+  const parserError = xmlDoc.querySelector('parsererror');
 
   if (parserError) {
     throw new Error(`Parsing error: ${parserError.textContent}`);
   }
 
-  const title = data.querySelector('channel > title').textContent;
-  const description = data.querySelector('channel > description').textContent;
-  const posts = [...data.querySelectorAll('item')].map((item) => {
+  const title = xmlDoc.querySelector('channel > title').textContent;
+  const description = xmlDoc.querySelector('channel > description').textContent;
+  const posts = [...xmlDoc.querySelectorAll('item')].map((item) => {
     const postLink = item.querySelector('link').textContent;
     const postTitle = item.querySelector('title').textContent;
     const postDescription = item.querySelector('description').textContent;
@@ -41,36 +44,26 @@ const constructURL = (url) => {
 };
 
 export const fetchFeed = (url) => (
-  axios.get(constructURL(url).toString())
-    .then(({ data }) => ({ url, xmlDoc: (new DOMParser()).parseFromString(data.contents, 'text/xml') }))
+  axios.get(constructURL(url).toString()).then(({ data }) => ({ url, data }))
 );
 
+const renewFeed = (feedURL, watchedState) => fetchFeed(feedURL)
+  .then(({ data }) => {
+    const parsedFeed = parseFeed(data.contents);
+    const savedPosts = watchedState.posts.filter((post) => post.feedId === feedURL);
+    const latestPosts = parsedFeed
+      .posts.map((post) => ({ feedId: feedURL, id: post.link, ...post }));
+
+    const newPosts = differenceWith(latestPosts, savedPosts, isEqual);
+    newPosts.forEach((newPost) => watchedState.posts.unshift(newPost));
+  })
+  .catch(() => {
+    console.error("Couldn't renew feed for", feedURL);
+  });
+
 export const observeFeedsUpdates = (watchedState) => {
-  setTimeout(() => {
-    const promises = watchedState.feeds.map((feed) => fetchFeed(feed.url));
+  const promises = watchedState.feeds.map((feed) => renewFeed(feed.url, watchedState));
 
-    Promise.allSettled(promises)
-      .then((results) => results.forEach(({ value, status }) => {
-        if (status === 'rejected') return;
-
-        const { url, xmlDoc } = value;
-
-        try {
-          parseFeed(xmlDoc);
-        } catch {
-          return;
-        }
-        const parsedFeed = parseFeed(xmlDoc);
-
-        const savedPosts = watchedState.posts.filter((post) => post.feedId === url);
-        const latestPosts = parsedFeed
-          .posts
-          .map((post) => ({ feedId: url, id: post.link, ...post }));
-
-        const newPosts = differenceWith(savedPosts, latestPosts, isEqual);
-
-        if (newPosts.length > 0) watchedState.posts.push([...newPosts]);
-      }))
-      .then(() => observeFeedsUpdates(watchedState));
-  }, 5000);
+  Promise.allSettled(promises)
+    .then(() => setTimeout(() => observeFeedsUpdates(watchedState), 5000));
 };

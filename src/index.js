@@ -48,8 +48,6 @@ const app = (t) => {
 
   const watchedState = watchState(state, t, selectors);
 
-  observeFeedsUpdates(watchedState);
-
   const schema = yup.string().required().url();
 
   const getValidationErrors = (feedUrl) => {
@@ -67,7 +65,6 @@ const app = (t) => {
     watchedState.activePost = null;
   });
 
-  // TODO: check if click events fire on mobile
   postsNode.addEventListener('click', (e) => {
     if (e.target.dataset.id) {
       const activePost = watchedState.posts.find((post) => post.id === e.target.dataset.id);
@@ -93,8 +90,8 @@ const app = (t) => {
         watchedState.form.errors = ['networkError'];
         watchedState.form.status = FORM_STATES.hasErrors;
       })
-      .then(({ xmlDoc }) => {
-        const parsedFeed = parseFeed(xmlDoc);
+      .then(({ data }) => {
+        const parsedFeed = parseFeed(data.contents);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];
@@ -105,6 +102,8 @@ const app = (t) => {
         watchedState.form.status = FORM_STATES.hasErrors;
       });
   });
+
+  observeFeedsUpdates(watchedState);
 };
 
 export default () => localePromise.then((text) => {
