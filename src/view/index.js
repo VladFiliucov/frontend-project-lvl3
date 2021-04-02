@@ -2,19 +2,16 @@ import onChange from 'on-change';
 import * as FORM_STATES from '../constants/index.js';
 
 const renderErrors = (errors, text, { input, feedback }) => {
-  const errorMessage = errors[0];
-  const errorMessageDiv = feedback;
-
   if (errors.length === 0) {
     input.classList.remove('is-invalid');
-    errorMessageDiv.innerHTML = '';
+    feedback.innerHTML = '';
     return;
   }
 
   input.classList.add('is-invalid');
-  errorMessageDiv.classList.remove('text-success');
-  errorMessageDiv.classList.add('text-danger');
-  errorMessageDiv.textContent = text(errorMessage);
+  feedback.classList.remove('text-success');
+  feedback.classList.add('text-danger');
+  feedback.textContent = text(errors[0]);
 };
 
 const enableInteraction = ({ submitButton, input }) => {
