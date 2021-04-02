@@ -2,8 +2,6 @@ import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
 import axios from 'axios';
 
-import * as FORM_STATES from '../constants/index.js';
-
 export const parseFeed = (rawFeed) => {
   const xmlDoc = (new DOMParser()).parseFromString(rawFeed, 'text/xml');
   const parserError = xmlDoc.querySelector('parsererror');
