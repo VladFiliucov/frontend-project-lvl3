@@ -40,19 +40,15 @@ const showSuccessFlash = (feedbackElement, text) => {
   successMessageDiv.innerHTML = text('success');
 };
 
-const renderForm = (formState, text, formElements) => {
-  const { status, errors } = formState;
-
+const renderForm = ({ status }, text, formElements) => {
   switch (status) {
     case FORM_STATES.untouched:
       resetForm(formElements);
       break;
     case FORM_STATES.hasErrors:
-      renderErrors(errors, text, formElements);
       enableInteraction(formElements);
       break;
     case FORM_STATES.submitting:
-      renderErrors(errors, text, formElements);
       disableInteraction(formElements);
       break;
     case FORM_STATES.success:
@@ -150,6 +146,9 @@ export default (state, t, selectors) => onChange(state, (path, value) => {
   switch (path) {
     case 'form.status':
       renderForm(state.form, t, selectors.formElements);
+      break;
+    case 'form.errors':
+      renderErrors(value, t, selectors.formElements);
       break;
     case 'feeds':
       renderNewestFeed(value, t);
