@@ -16,20 +16,17 @@ const renderErrors = (errors, text, { input, feedback }) => {
   /* eslint-enable no-param-reassign */
 };
 
-const enableInteraction = ({ submitButton, input }) => {
-  submitButton.removeAttribute('disabled');
-  input.removeAttribute('readOnly');
+const toggleInteraction = (processing, { submitButton, input }) => {
+  if (processing) {
+    submitButton.setAttribute('disabled', true);
+    input.setAttribute('readOnly', true);
+  } else {
+    submitButton.removeAttribute('disabled');
+    input.removeAttribute('readOnly');
+  }
 };
 
-const disableInteraction = ({ submitButton, input }) => {
-  submitButton.setAttribute('disabled', true);
-  input.setAttribute('readOnly', true);
-};
-
-const resetForm = ({ form, submitButton, input }) => {
-  enableInteraction({ input, submitButton });
-  form.reset();
-};
+const resetForm = ({ form }) => form.reset();
 
 const showSuccessFlash = (feedbackElement, text) => {
   const successMessageDiv = feedbackElement;
@@ -44,18 +41,18 @@ const renderForm = ({ status }, text, formElements) => {
     case FORM_STATES.untouched:
       resetForm(formElements);
       break;
-    case FORM_STATES.hasErrors:
-      enableInteraction(formElements);
-      break;
-    case FORM_STATES.submitting:
-      disableInteraction(formElements);
-      break;
+    // case FORM_STATES.hasErrors:
+    //   enableInteraction(formElements);
+    //   break;
+    // case FORM_STATES.submitting:
+    //   disableInteraction(formElements);
+    //   break;
     case FORM_STATES.success:
       resetForm(formElements);
       showSuccessFlash(formElements.feedback, text);
       break;
     default:
-      throw new Error(`form status ${status} not handled`);
+      // throw new Error(`form status ${status} not handled`);
   }
 };
 
@@ -148,6 +145,9 @@ export default (state, t, selectors) => onChange(state, (path, value) => {
       break;
     case 'form.errors':
       renderErrors(value, t, selectors.formElements);
+      break;
+    case 'processing':
+      toggleInteraction(value, selectors.formElements);
       break;
     case 'feeds':
       renderNewestFeed(value, t);

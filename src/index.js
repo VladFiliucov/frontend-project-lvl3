@@ -12,7 +12,6 @@ const app = (t) => {
   const state = {
     form: {
       status: FORM_STATES.untouched,
-      processError: null,
       url: '',
       valid: false,
       errors: [],
@@ -21,6 +20,7 @@ const app = (t) => {
     posts: [],
     activePost: null,
     visitedPostIds: [],
+    processing: false,
   };
 
   yup.setLocale({
@@ -75,12 +75,14 @@ const app = (t) => {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
+    watchedState.processing = true;
     const formData = new FormData(event.target);
     const url = formData.get('url');
     watchedState.form.errors = getValidationErrors(url);
 
     if (watchedState.form.errors.length > 0) {
       watchedState.form.status = FORM_STATES.hasErrors;
+      watchedState.processing = false;
       return;
     }
 
@@ -100,7 +102,8 @@ const app = (t) => {
       .catch(() => {
         watchedState.form.errors = ['parsingError'];
         watchedState.form.status = FORM_STATES.hasErrors;
-      });
+      })
+      .finally(() => { watchedState.processing = false; });
   });
 
   observeFeedsUpdates(watchedState);
