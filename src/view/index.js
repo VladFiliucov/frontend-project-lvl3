@@ -2,6 +2,7 @@ import onChange from 'on-change';
 import * as FORM_STATES from '../constants/index.js';
 
 const renderErrors = (errors, text, { input, feedback }) => {
+  /* eslint-disable no-param-reassign */
   if (errors.length === 0) {
     input.classList.remove('is-invalid');
     feedback.innerHTML = '';
@@ -12,6 +13,7 @@ const renderErrors = (errors, text, { input, feedback }) => {
   feedback.classList.remove('text-success');
   feedback.classList.add('text-danger');
   feedback.textContent = text(errors[0]);
+  /* eslint-enable no-param-reassign */
 };
 
 const enableInteraction = ({ submitButton, input }) => {
