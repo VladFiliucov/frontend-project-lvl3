@@ -1,6 +1,4 @@
-import i18next from 'i18next';
-
-export default () => i18next.init({
+export default {
   // lng: navigator.language,
   lng: 'ru',
   resources: {
@@ -33,4 +31,4 @@ export default () => i18next.init({
       },
     },
   },
-});
+};

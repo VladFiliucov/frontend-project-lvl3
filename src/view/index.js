@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 import * as FORM_STATES from '../constants/index.js';
 
-const renderErrors = (errors, text, { input, feedback }) => {
+const renderErrors = (errors, i18n, { input, feedback }) => {
   /* eslint-disable no-param-reassign */
   if (errors.length === 0) {
     input.classList.remove('is-invalid');
@@ -12,7 +12,7 @@ const renderErrors = (errors, text, { input, feedback }) => {
   input.classList.add('is-invalid');
   feedback.classList.remove('text-success');
   feedback.classList.add('text-danger');
-  feedback.textContent = text(errors[0]);
+  feedback.textContent = i18n.t(errors[0]);
   /* eslint-enable no-param-reassign */
 };
 
@@ -28,32 +28,32 @@ const toggleInteraction = (processing, { submitButton, input }) => {
 
 const resetForm = ({ form }) => form.reset();
 
-const showSuccessFlash = (feedbackElement, text) => {
+const showSuccessFlash = (feedbackElement, i18n) => {
   const successMessageDiv = feedbackElement;
   successMessageDiv.classList.remove('text-danger');
   successMessageDiv.classList.add('text-success');
 
-  successMessageDiv.innerHTML = text('success');
+  successMessageDiv.innerHTML = i18n.t('success');
 };
 
-const renderForm = ({ status }, text, formElements) => {
+const renderForm = ({ status }, i18n, formElements) => {
   switch (status) {
     case FORM_STATES.pending:
       resetForm(formElements);
       break;
     case FORM_STATES.success:
       resetForm(formElements);
-      showSuccessFlash(formElements.feedback, text);
+      showSuccessFlash(formElements.feedback, i18n);
       break;
     default:
       throw new Error(`form status ${status} not handled`);
   }
 };
 
-const renderLists = (t) => {
+const renderLists = (i18n) => {
   const containers = [
-    [t('feeds'), document.querySelector('.feeds')],
-    [t('posts'), document.querySelector('.posts')],
+    [i18n.t('feeds'), document.querySelector('.feeds')],
+    [i18n.t('posts'), document.querySelector('.posts')],
   ];
   containers.forEach(([name, container]) => {
     const heading = document.createElement('h2');
@@ -65,7 +65,7 @@ const renderLists = (t) => {
   });
 };
 
-const renderPosts = (posts, t, visitedPostsIds) => {
+const renderPosts = (posts, i18n, visitedPostsIds) => {
   const postsContainer = document.querySelector('.posts');
 
   const ul = postsContainer.querySelector('ul');
@@ -89,7 +89,7 @@ const renderPosts = (posts, t, visitedPostsIds) => {
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.classList.add('btn', 'btn-primary', 'btn-sm');
-    button.textContent = t('preview');
+    button.textContent = i18n.t('preview');
     button.dataset.id = post.id;
     button.dataset.bsToggle = 'modal';
     button.dataset.bsTarget = '#activePostModal';
@@ -101,7 +101,7 @@ const renderPosts = (posts, t, visitedPostsIds) => {
   });
 };
 
-const renderModal = (activePost, t) => {
+const renderModal = (activePost, i18n) => {
   if (!activePost) return;
 
   const title = document.querySelector('#activePostModalLabel');
@@ -109,15 +109,15 @@ const renderModal = (activePost, t) => {
   const description = document.querySelector('.modal-body');
   description.textContent = activePost.description;
   const closeBtn = document.querySelector('#close-btn');
-  closeBtn.textContent = t('close');
+  closeBtn.textContent = i18n.t('close');
   const readMoreLink = document.querySelector('#read-more-link');
-  readMoreLink.textContent = t('readMore');
+  readMoreLink.textContent = i18n.t('readMore');
   readMoreLink.setAttribute('href', activePost.link);
 };
 
-const renderNewestFeed = (feeds, t) => {
+const renderNewestFeed = (feeds, i18n) => {
   const feedContainer = document.querySelector('.feeds');
-  if (feeds.length === 1) renderLists(t);
+  if (feeds.length === 1) renderLists(i18n);
 
   const newestFeed = feeds[feeds.length - 1];
   const li = document.createElement('li');
@@ -132,28 +132,28 @@ const renderNewestFeed = (feeds, t) => {
   currentList.appendChild(li);
 };
 
-export default (state, t, selectors) => onChange(state, (path, value) => {
+export default (state, i18n, selectors) => onChange(state, (path, value) => {
   switch (path) {
     case 'form.status':
-      renderForm(state.form, t, selectors.formElements);
+      renderForm(state.form, i18n, selectors.formElements);
       break;
     case 'form.errors':
-      renderErrors(value, t, selectors.formElements);
+      renderErrors(value, i18n, selectors.formElements);
       break;
     case 'processing':
       toggleInteraction(value, selectors.formElements);
       break;
     case 'feeds':
-      renderNewestFeed(value, t);
+      renderNewestFeed(value, i18n);
       break;
     case 'posts':
-      renderPosts(value, t, state.visitedPostIds);
+      renderPosts(value, i18n, state.visitedPostIds);
       break;
     case 'visitedPostIds':
-      renderPosts(state.posts, t, value);
+      renderPosts(state.posts, i18n, value);
       break;
     case 'activePost':
-      renderModal(value, t);
+      renderModal(value, i18n);
       break;
     default:
       break;
