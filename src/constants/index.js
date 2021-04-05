@@ -1,4 +1,2 @@
-export const untouched = 'untouched';
+export const pending = 'pending';
 export const success = 'success';
-export const hasErrors = 'hasErrors';
-export const submitting = 'submitting';

@@ -11,7 +11,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 const app = (t) => {
   const state = {
     form: {
-      status: FORM_STATES.untouched,
+      status: FORM_STATES.pending,
       url: '',
       valid: false,
       errors: [],
@@ -81,17 +81,11 @@ const app = (t) => {
     watchedState.form.errors = getValidationErrors(url);
 
     if (watchedState.form.errors.length > 0) {
-      watchedState.form.status = FORM_STATES.hasErrors;
       watchedState.processing = false;
       return;
     }
 
-    watchedState.form.status = FORM_STATES.submitting;
     fetchFeed(url)
-      .catch(() => {
-        watchedState.form.errors = ['networkError'];
-        watchedState.form.status = FORM_STATES.hasErrors;
-      })
       .then(({ data }) => {
         const parsedFeed = parseFeed(data.contents);
         watchedState.feeds.push({ url, ...parsedFeed.feed });
@@ -99,11 +93,17 @@ const app = (t) => {
         watchedState.posts = [...newPosts, ...state.posts];
         watchedState.form.status = FORM_STATES.success;
       })
-      .catch(() => {
-        watchedState.form.errors = ['parsingError'];
-        watchedState.form.status = FORM_STATES.hasErrors;
+      .catch((error) => {
+        if (error.isAxiosError) {
+          watchedState.form.errors = ['networkError'];
+        } else {
+          watchedState.form.errors = ['parsingError'];
+        }
       })
-      .finally(() => { watchedState.processing = false; });
+      .finally(() => {
+        watchedState.processing = false;
+        watchedState.form.status = FORM_STATES.pending;
+      });
   });
 
   observeFeedsUpdates(watchedState);

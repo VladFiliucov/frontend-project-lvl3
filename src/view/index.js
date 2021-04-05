@@ -38,21 +38,15 @@ const showSuccessFlash = (feedbackElement, text) => {
 
 const renderForm = ({ status }, text, formElements) => {
   switch (status) {
-    case FORM_STATES.untouched:
+    case FORM_STATES.pending:
       resetForm(formElements);
       break;
-    // case FORM_STATES.hasErrors:
-    //   enableInteraction(formElements);
-    //   break;
-    // case FORM_STATES.submitting:
-    //   disableInteraction(formElements);
-    //   break;
     case FORM_STATES.success:
       resetForm(formElements);
       showSuccessFlash(formElements.feedback, text);
       break;
     default:
-      // throw new Error(`form status ${status} not handled`);
+      throw new Error(`form status ${status} not handled`);
   }
 };
 
