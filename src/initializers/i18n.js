@@ -6,7 +6,7 @@ const localePromise = () => {
   return new Promise((resolve) => {
     resolve(i18nextInstance.init({
       // lng: navigator.language,
-      lng: 'en-US',
+      lng: 'ru',
       resources: {
         'en-US': {
           translation: {
