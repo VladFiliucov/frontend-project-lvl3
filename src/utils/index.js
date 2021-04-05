@@ -38,11 +38,11 @@ const constructURL = (url) => {
   fullURL.searchParams.set('url', url);
   fullURL.searchParams.set('disableCache', true);
 
-  return fullURL;
+  return fullURL.toString();
 };
 
 export const fetchFeed = (url) => (
-  axios.get(constructURL(url).toString()).then(({ data }) => ({ url, data }))
+  axios.get(constructURL(url)).then(({ data }) => ({ url, data }))
 );
 
 const renewFeed = (feedURL, watchedState) => fetchFeed(feedURL)
