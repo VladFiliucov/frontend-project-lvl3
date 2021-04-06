@@ -83,6 +83,7 @@ const app = (t) => {
 
     if (watchedState.form.errors.length > 0) {
       watchedState.processing = false;
+      watchedState.form.status = 'hasError';
       return;
     }
 

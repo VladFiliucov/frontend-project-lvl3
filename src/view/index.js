@@ -36,10 +36,13 @@ const showSuccessFlash = (feedbackElement, text) => {
   successMessageDiv.innerHTML = text('success');
 };
 
-const renderForm = ({ status }, text, formElements) => {
+const renderForm = ({ status }, text, formElements, errors) => {
   switch (status) {
     case FORM_STATES.pending:
       resetForm(formElements);
+      break;
+    case 'hasError':
+      renderErrors(errors, text, formElements);
       break;
     case FORM_STATES.success:
       resetForm(formElements);
@@ -136,7 +139,7 @@ export default (state, i18nInstance, selectors) => onChange(state, (path, value)
   const t = i18nInstance.t.bind(i18nInstance);
   switch (path) {
     case 'form.status':
-      renderForm(state.form, t, selectors.formElements);
+      renderForm(state.form, t, selectors.formElements, state.form.errors);
       break;
     case 'form.errors':
       renderErrors(value, t, selectors.formElements);
