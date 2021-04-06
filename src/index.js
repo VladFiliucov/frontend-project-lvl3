@@ -80,6 +80,7 @@ const app = (t) => {
     const formData = new FormData(event.target);
     const url = formData.get('url');
     watchedState.form.errors = getValidationErrors(url);
+    console.log('Validation errors: ', watchedState.form.errors);
 
     if (watchedState.form.errors.length > 0) {
       watchedState.processing = false;
