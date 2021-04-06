@@ -76,13 +76,13 @@ const app = (t) => {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    watchedState.processing = true;
     const formData = new FormData(event.target);
     const url = formData.get('url');
     watchedState.form.errors = getValidationErrors(url);
     console.log('Validation errors: ', watchedState.form.errors, getValidationErrors(url));
     console.log('Posts', watchedState.posts);
 
+    watchedState.processing = true;
     if (watchedState.form.errors.length > 0) {
       watchedState.processing = false;
       return;
