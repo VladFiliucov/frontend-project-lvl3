@@ -1,19 +1,35 @@
 import onChange from 'on-change';
-import * as FORM_STATES from '../constants/index.js';
 
-const renderErrors = (errors, text, { input, feedback }) => {
+const renderFeedback = (feedbackType, text, feedback, errors) => {
   /* eslint-disable no-param-reassign */
-  if (errors.length === 0) {
-    input.classList.remove('is-invalid');
+  const shouldClearFeedback = !['success', 'error'].includes(feedbackType);
+
+  if (shouldClearFeedback) {
     feedback.innerHTML = '';
     return;
   }
 
-  input.classList.add('is-invalid');
+  if (feedbackType === 'success') {
+    feedback.classList.remove('text-danger');
+    feedback.classList.add('text-success');
+    feedback.textContent = text('success');
+    return;
+  }
+
   feedback.classList.remove('text-success');
   feedback.classList.add('text-danger');
   feedback.textContent = text(errors[0]);
   /* eslint-enable no-param-reassign */
+};
+
+const renderFormErrors = (errors, text, { input, feedback }) => {
+  if (errors.length === 0) {
+    input.classList.remove('is-invalid');
+    renderFeedback('success', text, feedback);
+    return;
+  }
+  input.classList.add('is-invalid');
+  renderFeedback('error', text, feedback, errors);
 };
 
 const toggleInteraction = (processing, { submitButton, input }) => {
@@ -28,22 +44,22 @@ const toggleInteraction = (processing, { submitButton, input }) => {
 
 const resetForm = ({ form }) => form.reset();
 
-const showSuccessFlash = (feedbackElement, text) => {
-  const successMessageDiv = feedbackElement;
-  successMessageDiv.classList.remove('text-danger');
-  successMessageDiv.classList.add('text-success');
-
-  successMessageDiv.innerHTML = text('success');
-};
-
-const renderForm = ({ status }, text, formElements) => {
+const renderProcessing = ({ status, errors }, text, formElements) => {
   switch (status) {
-    case FORM_STATES.pending:
-      resetForm(formElements);
+    case 'idle':
+      toggleInteraction(false, formElements);
       break;
-    case FORM_STATES.success:
+    case 'inProgress':
+      toggleInteraction(true, formElements);
+      break;
+    case 'hasError':
+      renderFeedback('error', text, formElements.feedback, errors);
+      toggleInteraction(false, formElements);
+      break;
+    case 'success':
+      renderFeedback('success', text, formElements.feedback);
       resetForm(formElements);
-      showSuccessFlash(formElements.feedback, text);
+      toggleInteraction(false, formElements);
       break;
     default:
       throw new Error(`form status ${status} not handled`);
@@ -135,14 +151,11 @@ const renderNewestFeed = (feeds, t) => {
 export default (state, i18nInstance, selectors) => onChange(state, (path, value) => {
   const t = i18nInstance.t.bind(i18nInstance);
   switch (path) {
-    case 'form.status':
-      renderForm(state.form, t, selectors.formElements);
+    case 'processing.status':
+      renderProcessing(state.processing, t, selectors.formElements);
       break;
-    case 'form.errors':
-      renderErrors(value, t, selectors.formElements);
-      break;
-    case 'processing':
-      toggleInteraction(value, selectors.formElements);
+    case 'form.valid':
+      renderFormErrors(state.form.errors, t, selectors.formElements);
       break;
     case 'feeds':
       renderNewestFeed(value, t);

@@ -12,16 +12,18 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 const app = (t) => {
   const state = {
     form: {
-      status: FORM_STATES.pending,
       url: '',
-      valid: false,
+      valid: true,
       errors: [],
     },
     feeds: [],
     posts: [],
     activePost: null,
     visitedPostIds: [],
-    processing: false,
+    processing: {
+      status: 'idle',
+      errors: [],
+    },
   };
 
   yup.setLocale({
@@ -76,17 +78,18 @@ const app = (t) => {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    watchedState.processing = true;
+    watchedState.processing.status = 'inProgress';
     const formData = new FormData(event.target);
     const url = formData.get('url');
     watchedState.form.errors = getValidationErrors(url);
-    console.log('Validation errors: ', watchedState.form.errors, getValidationErrors(url));
-    console.log('Posts', watchedState.posts);
 
     if (watchedState.form.errors.length > 0) {
-      watchedState.processing = false;
+      watchedState.form.valid = false;
+      watchedState.processing.status = 'idle';
       return;
     }
+
+    watchedState.form.valid = true;
 
     fetchFeed(url)
       .then(({ data }) => {
@@ -94,18 +97,16 @@ const app = (t) => {
         watchedState.feeds.push({ url, ...parsedFeed.feed });
         const newPosts = parsedFeed.posts.map((post) => ({ feedId: url, id: post.link, ...post }));
         watchedState.posts = [...newPosts, ...state.posts];
-        watchedState.form.status = FORM_STATES.success;
+        watchedState.processing.errors = [];
+        watchedState.processing.status = 'success';
       })
       .catch((error) => {
         if (error.isAxiosError) {
-          watchedState.form.errors = ['networkError'];
+          watchedState.processing.errors = ['networkError'];
         } else {
-          watchedState.form.errors = ['parsingError'];
+          watchedState.processing.errors = ['parsingError'];
         }
-      })
-      .finally(() => {
-        watchedState.processing = false;
-        watchedState.form.status = FORM_STATES.pending;
+        watchedState.processing.status = 'hasError';
       });
   });
 
