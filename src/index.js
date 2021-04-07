@@ -3,10 +3,8 @@ import i18next from 'i18next';
 import {
   fetchFeed, observeFeedsUpdates, parseFeed,
 } from './utils/index.js';
-import * as FORM_STATES from './constants/index.js';
 import localisationConfig from './initializers/i18n.js';
 import watchState from './view/index.js';
-import 'regenerator-runtime/runtime.js'; // https://github.com/babel/babel/issues/9849#issuecomment-487040428
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const app = (t) => {
