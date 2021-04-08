@@ -61,7 +61,8 @@ const renewFeed = (feedURL, watchedState) => fetchFeed(feedURL)
 
 export const observeFeedsUpdates = (watchedState) => {
   const promises = watchedState.feeds.map((feed) => renewFeed(feed.url, watchedState));
+  const refreshInterval = 5000;
 
   Promise.allSettled(promises)
-    .then(() => setTimeout(() => observeFeedsUpdates(watchedState), 5000));
+    .then(() => setTimeout(() => observeFeedsUpdates(watchedState), refreshInterval));
 };
