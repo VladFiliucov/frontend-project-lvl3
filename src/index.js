@@ -60,7 +60,7 @@ export const observeFeedsUpdates = (watchedState) => {
     .then(() => setTimeout(() => observeFeedsUpdates(watchedState), refreshInterval));
 };
 
-const app = (t) => {
+const app = (i18n) => {
   const state = {
     form: {
       url: '',
@@ -100,7 +100,7 @@ const app = (t) => {
     },
   };
 
-  const watchedState = watchState(state, t, DOMNodes);
+  const watchedState = watchState(state, i18n, DOMNodes);
 
   const schema = yup.string().required().url();
 
