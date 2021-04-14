@@ -3,40 +3,10 @@ import i18next from 'i18next';
 import differenceWith from 'lodash/differenceWith.js';
 import isEqual from 'lodash/isEqual.js';
 import fetchFeed from './utils/index.js';
+import parseFeed from './rssParser.js';
 import localisationConfig from './initializers/i18n.js';
 import watchState from './view/index.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
-const parseFeed = (rawFeed) => {
-  const xmlDoc = (new DOMParser()).parseFromString(rawFeed, 'text/xml');
-  const parserError = xmlDoc.querySelector('parsererror');
-
-  if (parserError) {
-    throw new Error(`Parsing error: ${parserError.textContent}`);
-  }
-
-  const title = xmlDoc.querySelector('channel > title').textContent;
-  const description = xmlDoc.querySelector('channel > description').textContent;
-  const posts = [...xmlDoc.querySelectorAll('item')].map((item) => {
-    const postLink = item.querySelector('link').textContent;
-    const postTitle = item.querySelector('title').textContent;
-    const postDescription = item.querySelector('description').textContent;
-
-    return ({
-      link: postLink,
-      title: postTitle,
-      description: postDescription,
-    });
-  });
-
-  return {
-    feed: {
-      title,
-      description,
-    },
-    posts,
-  };
-};
 
 const renewFeed = (feedURL, watchedState) => fetchFeed(feedURL)
   .then(({ data }) => {
@@ -154,8 +124,10 @@ const app = (i18n) => {
       .catch((error) => {
         if (error.isAxiosError) {
           watchedState.processing.errors = ['networkError'];
-        } else {
+        } else if (error.isParsingError) {
           watchedState.processing.errors = ['parsingError'];
+        } else {
+          watchedState.processing.errors = ['oupsError'];
         }
         watchedState.processing.status = 'hasError';
       });
