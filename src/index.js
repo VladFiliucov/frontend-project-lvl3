@@ -71,7 +71,7 @@ const app = (t) => {
     feeds: [],
     posts: [],
     activePost: null,
-    visitedPostIds: [],
+    visitedPostIds: new Set(),
     processing: {
       status: 'idle',
       errors: [],
@@ -124,7 +124,7 @@ const app = (t) => {
     if (e.target.dataset.id) {
       const activePost = watchedState.posts.find((post) => post.id === e.target.dataset.id);
       watchedState.activePost = activePost;
-      watchedState.visitedPostIds.push(activePost.id);
+      watchedState.visitedPostIds.add(activePost.id);
     }
   });
 
