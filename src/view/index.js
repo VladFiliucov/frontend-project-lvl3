@@ -148,14 +148,14 @@ const renderNewestFeed = (feeds, t) => {
   currentList.appendChild(li);
 };
 
-export default (state, i18nInstance, selectors) => onChange(state, (path, value) => {
+export default (state, i18nInstance, DOMNodes) => onChange(state, (path, value) => {
   const t = i18nInstance.t.bind(i18nInstance);
   switch (path) {
     case 'processing.status':
-      renderProcessing(state.processing, t, selectors.formElements);
+      renderProcessing(state.processing, t, DOMNodes.formElements);
       break;
     case 'form.valid':
-      renderFormErrors(state.form.errors, t, selectors.formElements);
+      renderFormErrors(state.form.errors, t, DOMNodes.formElements);
       break;
     case 'feeds':
       renderNewestFeed(value, t);

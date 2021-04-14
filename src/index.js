@@ -94,14 +94,14 @@ const app = (t) => {
   const postsNode = document.querySelector('.posts');
   const activePostModal = document.querySelector('#activePostModal');
 
-  const selectors = {
+  const DOMNodes = {
     postsNode,
     formElements: {
       form, submitButton, input, feedback,
     },
   };
 
-  const watchedState = watchState(state, t, selectors);
+  const watchedState = watchState(state, t, DOMNodes);
 
   const schema = yup.string().required().url();
 
