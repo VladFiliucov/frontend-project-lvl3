@@ -60,7 +60,6 @@ export const observeFeedsUpdates = (watchedState) => {
     .then(() => setTimeout(() => observeFeedsUpdates(watchedState), refreshInterval));
 };
 
-
 const app = (t) => {
   const state = {
     form: {

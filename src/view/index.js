@@ -87,7 +87,7 @@ const renderPosts = (posts, t, visitedPostsIds) => {
   const ul = postsContainer.querySelector('ul');
   ul.innerHTML = '';
   posts.forEach((post) => {
-    const isVisited = visitedPostsIds.includes(post.id);
+    const isVisited = visitedPostsIds.has(post.id);
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
 
